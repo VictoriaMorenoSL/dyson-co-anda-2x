@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="description"
+      content="Estudio 3D interactivo de un dispositivo de estilizado por aire."
+    />
+    <title>Dyson Air Studio — Etapa 01</title>
+  </head>
+  <body>
+    <main class="studio-shell">
+      <header class="studio-header">
+        <p class="eyebrow">DYSON AIR STUDIO</p>
+        <h1>Co-anda2x™ <span>estudio de forma</span></h1>
+      </header>
+
+      <section class="viewer" aria-label="Visor 3D interactivo del producto">
+        <div id="scene-container"></div>
+        <div class="attachment-selector" role="group" aria-label="Seleccionar accesorio">
+          <p class="selector-label">Accesorio</p>
+          <div class="selector-options">
+            <button class="attachment-option is-active" type="button" data-attachment="curling" aria-pressed="true">
+              Rizador
+            </button>
+            <button class="attachment-option" type="button" data-attachment="fastDryer" aria-pressed="false">
+              Secador
+            </button>
+            <button class="attachment-option" type="button" data-attachment="roundBrush" aria-pressed="false">
+              Cepillo
+            </button>
+            <button class="attachment-option" type="button" data-attachment="airSmooth" aria-pressed="false">
+              AirSmooth
+            </button>
+          </div>
+          <span id="attachment-status" class="sr-only" aria-live="polite">Rizador conectado</span>
+        </div>
+        <p class="interaction-hint" aria-hidden="true">Arrastra para rotar · Pellizca para acercar</p>
+        <button id="reset-view" class="reset-button" type="button" aria-label="Restablecer vista 3D">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4.6 8.5A8 8 0 1 1 4 14M4.6 8.5V4m0 4.5H9" />
+          </svg>
+          Restablecer vista
+        </button>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

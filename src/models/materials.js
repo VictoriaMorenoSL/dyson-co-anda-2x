@@ -1,0 +1,97 @@
+import * as THREE from 'three';
+import { PRODUCT } from '../config/productConfig.js';
+
+export function createProductMaterials() {
+  return {
+    body: new THREE.MeshPhysicalMaterial({
+      color: PRODUCT.colors.body,
+      metalness: 0.06,
+      roughness: 0.38,
+      clearcoat: 0.12,
+      clearcoatRoughness: 0.52,
+      sheen: 0.18,
+      sheenColor: new THREE.Color(0xffeeea),
+      sheenRoughness: 0.66,
+      specularIntensity: 0.48,
+      envMapIntensity: 0.62,
+    }),
+    bodyWarm: new THREE.MeshPhysicalMaterial({
+      color: PRODUCT.colors.bodyWarm,
+      metalness: 0.18,
+      roughness: 0.34,
+      clearcoat: 0.14,
+      clearcoatRoughness: 0.5,
+      envMapIntensity: 0.68,
+    }),
+    graphite: new THREE.MeshPhysicalMaterial({
+      color: PRODUCT.colors.graphite,
+      metalness: 0.34,
+      roughness: 0.39,
+      clearcoat: 0.1,
+      clearcoatRoughness: 0.55,
+    }),
+    graphiteSoft: new THREE.MeshStandardMaterial({
+      color: PRODUCT.colors.graphiteSoft,
+      metalness: 0.2,
+      roughness: 0.45,
+    }),
+    barrelGraphite: new THREE.MeshPhysicalMaterial({
+      color: 0x303434,
+      metalness: 0.1,
+      roughness: 0.29,
+      clearcoat: 0.14,
+      clearcoatRoughness: 0.44,
+      sheen: 0.2,
+      sheenColor: new THREE.Color(0x697171),
+      sheenRoughness: 0.48,
+      specularIntensity: 0.86,
+      specularColor: new THREE.Color(0xd8dddd),
+      anisotropy: 0.32,
+      anisotropyRotation: Math.PI / 2,
+      envMapIntensity: 1.0,
+    }),
+    barrelFlutes: new THREE.MeshPhysicalMaterial({
+      color: 0x1a1d1d,
+      metalness: 0.08,
+      roughness: 0.37,
+      clearcoat: 0.08,
+      clearcoatRoughness: 0.58,
+      specularIntensity: 0.62,
+      envMapIntensity: 0.72,
+    }),
+    copper: new THREE.MeshPhysicalMaterial({
+      color: PRODUCT.colors.copper,
+      metalness: 0.8,
+      roughness: 0.27,
+      clearcoat: 0.1,
+      clearcoatRoughness: 0.42,
+      envMapIntensity: 1.12,
+    }),
+    attachmentCopper: new THREE.MeshPhysicalMaterial({
+      color: 0xc98680,
+      metalness: 0.68,
+      roughness: 0.32,
+      clearcoat: 0.08,
+      clearcoatRoughness: 0.5,
+      specularIntensity: 0.78,
+      envMapIntensity: 1.02,
+    }),
+    darkCopper: new THREE.MeshStandardMaterial({
+      color: PRODUCT.colors.darkCopper,
+      metalness: 0.55,
+      roughness: 0.38,
+    }),
+    indicator: new THREE.MeshPhysicalMaterial({
+      color: 0xb9dcdf,
+      emissive: 0x79b4bd,
+      emissiveIntensity: 0.28,
+      roughness: 0.36,
+    }),
+    filterShell: new THREE.MeshPhysicalMaterial({
+      color: PRODUCT.colors.darkCopper,
+      metalness: 0.48,
+      roughness: 0.43,
+      side: THREE.DoubleSide,
+    }),
+  };
+}
