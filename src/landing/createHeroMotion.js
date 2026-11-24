@@ -55,6 +55,7 @@ export function createHeroMotion({
   let timeline;
   let resizeTimer;
   let interactionActive = false;
+  let viewportWidth = window.innerWidth;
 
   function updateInteraction(enabled) {
     if (interactionActive === enabled) return;
@@ -170,6 +171,9 @@ export function createHeroMotion({
   }
 
   function handleResize() {
+    const nextWidth = window.innerWidth;
+    if (nextWidth <= 900 && Math.abs(nextWidth - viewportWidth) < 2) return;
+    viewportWidth = nextWidth;
     window.clearTimeout(resizeTimer);
     resizeTimer = window.setTimeout(() => {
       const progress = timeline?.progress() ?? 0;

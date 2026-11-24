@@ -40,6 +40,10 @@ export function createScene(
   controls.maxPolarAngle = Math.PI * 0.76;
   controls.target.fromArray(CAMERA.target);
   controls.update();
+  // OrbitControls applies `touch-action: none` inline when it connects, even
+  // while disabled. Restore native vertical panning for the shared mobile
+  // canvas; the custom interaction below only captures horizontal drags.
+  renderer.domElement.style.touchAction = 'pan-y';
 
   addStudioLighting(scene);
   const productGroup = createAirwrap();
@@ -100,6 +104,15 @@ export function createScene(
   let dragStartY = 0;
   let rotationStartY = 0;
 
+  function releaseActivePointer(pointerId = activePointer) {
+    if (pointerId !== null && renderer.domElement.hasPointerCapture(pointerId)) {
+      renderer.domElement.releasePointerCapture(pointerId);
+    }
+    activePointer = null;
+    dragStarted = false;
+    container.classList.remove('is-grabbing');
+  }
+
   function pointerHitsProductAt(clientX, clientY) {
     const rect = renderer.domElement.getBoundingClientRect();
     if (
@@ -126,8 +139,10 @@ export function createScene(
     dragStartX = event.clientX;
     dragStartY = event.clientY;
     rotationStartY = rotationTarget.y;
-    renderer.domElement.setPointerCapture(event.pointerId);
-    container.classList.add('is-grabbing');
+    if (dragStarted) {
+      renderer.domElement.setPointerCapture(event.pointerId);
+      container.classList.add('is-grabbing');
+    }
   }
 
   function handlePointerMove(event) {
@@ -135,16 +150,14 @@ export function createScene(
     const deltaX = event.clientX - dragStartX;
     const deltaY = event.clientY - dragStartY;
 
-    if (!dragStarted && Math.hypot(deltaX, deltaY) > 8) {
-      if (Math.abs(deltaY) > Math.abs(deltaX)) {
-        if (renderer.domElement.hasPointerCapture(event.pointerId)) {
-          renderer.domElement.releasePointerCapture(event.pointerId);
-        }
-        activePointer = null;
-        container.classList.remove('is-grabbing');
+    if (!dragStarted && Math.hypot(deltaX, deltaY) > 10) {
+      if (Math.abs(deltaY) >= Math.abs(deltaX)) {
+        releaseActivePointer(event.pointerId);
         return;
       }
       dragStarted = true;
+      renderer.domElement.setPointerCapture(event.pointerId);
+      container.classList.add('is-grabbing');
     }
 
     if (!dragStarted) return;
@@ -154,12 +167,7 @@ export function createScene(
 
   function finishPointer(event) {
     if (event.pointerId !== activePointer) return;
-    if (renderer.domElement.hasPointerCapture(event.pointerId)) {
-      renderer.domElement.releasePointerCapture(event.pointerId);
-    }
-    activePointer = null;
-    dragStarted = false;
-    container.classList.remove('is-grabbing');
+    releaseActivePointer(event.pointerId);
   }
 
   renderer.domElement.addEventListener('pointerdown', handlePointerDown);
@@ -215,15 +223,14 @@ export function createScene(
       interactionEnabled = enabled;
       container.classList.toggle('is-interactive', enabled);
       if (!enabled) {
-        activePointer = null;
-        dragStarted = false;
+        releaseActivePointer();
         rotationTarget.set(0, 0);
-        container.classList.remove('is-grabbing');
       }
     },
     reset: () => resetCamera(camera, controls),
     destroy() {
       cancelAnimationFrame(frameId);
+      releaseActivePointer();
       frameCallbacks.clear();
       resizeObserver.disconnect();
       renderer.domElement.removeEventListener('pointerdown', handlePointerDown);

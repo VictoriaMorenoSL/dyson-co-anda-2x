@@ -1,4 +1,5 @@
 import './styles.css';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { createScene } from './scene/createScene.js';
 import { createHeroMotion } from './landing/createHeroMotion.js';
 import { createReactiveHeroBackground } from './landing/createReactiveHeroBackground.js';
@@ -12,6 +13,8 @@ import { createFeelAir } from './landing/createFeelAir.js';
 import { createTechnologyVideo } from './landing/createTechnologyVideo.js';
 import { createFooterMotion } from './landing/createFooterMotion.js';
 import { createNavigationMenu } from './landing/createNavigationMenu.js';
+
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 const stage = document.querySelector('.hero-stage');
 const styleSection = document.querySelector('.create-style-scroll');

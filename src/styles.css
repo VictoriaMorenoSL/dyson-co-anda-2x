@@ -459,6 +459,7 @@ button { font: inherit; }
 .hero-scene.is-interactive {
   pointer-events: auto;
   cursor: grab;
+  touch-action: pan-y;
 }
 
 .hero-scene.is-interactive canvas {
@@ -1631,7 +1632,7 @@ button { font: inherit; }
     transform: none;
   }
   .create-style-scroll,
-  .create-style-stage { min-height: 190svh; }
+  .create-style-stage { min-height: 112svh; }
   .create-style-content {
     display: flex;
     flex-direction: column;

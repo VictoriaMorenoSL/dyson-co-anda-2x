@@ -82,6 +82,7 @@ export function createStyleExperience({
   let scrollTimeline;
   let copyTimeline;
   let currentStyle = 'curls';
+  let viewportWidth = window.innerWidth;
   const cardHandlers = new Map();
 
   function updateCopy(key) {
@@ -228,6 +229,9 @@ export function createStyleExperience({
   });
 
   const handleResize = () => {
+    const nextWidth = window.innerWidth;
+    if (nextWidth <= 900 && Math.abs(nextWidth - viewportWidth) < 2) return;
+    viewportWidth = nextWidth;
     window.clearTimeout(handleResize.timer);
     handleResize.timer = window.setTimeout(() => {
       buildScrollMotion();

@@ -206,6 +206,7 @@ export function createFeelAir({
   let feelSessionStarted = false;
   let sectionVisible = false;
   let resizeTimer;
+  let viewportWidth = window.innerWidth;
 
   function enterFeel({ rememberAttachment = true } = {}) {
     if (rememberAttachment && !feelSessionStarted) {
@@ -365,6 +366,9 @@ export function createFeelAir({
   }
 
   function handleResize() {
+    const nextWidth = window.innerWidth;
+    if (nextWidth <= 900 && Math.abs(nextWidth - viewportWidth) < 2) return;
+    viewportWidth = nextWidth;
     window.clearTimeout(resizeTimer);
     resizeTimer = window.setTimeout(() => {
       buildMotion();
