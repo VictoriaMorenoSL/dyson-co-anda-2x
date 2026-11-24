@@ -5,8 +5,8 @@ const productCorners = [-1.35, 1.35].flatMap((x) =>
   [-5.5, 9.7].flatMap((y) => [-1.35, 1.35].map((z) => new Vector3(x, y, z))),
 );
 
-export function fitProductPose(scene, stage, slot, pose, airflow = false) {
-  if (window.innerWidth >= 1024 || !scene.camera || !slot) return pose;
+export function fitProductPose(scene, stage, slot, pose, { airflow = false, breakpoint = 1024 } = {}) {
+  if (window.innerWidth >= breakpoint || !scene.camera || !slot) return pose;
 
   const canvas = scene.renderer.domElement.getBoundingClientRect();
   const frame = stage.getBoundingClientRect();

@@ -3,6 +3,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+export const HERO_FRAMING_BREAKPOINT = 1120;
+
 const START_LAYOUTS = {
   desktop: {
     air: [[0.1, 0.28], [0.51, 0.28], [0.91, 0.28]],
@@ -16,17 +18,19 @@ const START_LAYOUTS = {
   },
 };
 
-export function getHeroProductPose(viewportWidth = window.innerWidth) {
+export function getHeroProductPose(viewportWidth = window.innerWidth, viewportHeight = window.innerHeight) {
   const isMobile = viewportWidth <= 680;
+  const widePortraitPhone = viewportWidth >= 540 && viewportWidth < 768
+    && viewportHeight >= 620 && viewportWidth < viewportHeight;
   if (isMobile) {
     return {
       initial: { x: 0.1, y: -0.25, zRotation: -0.66, scale: 1.02 },
-      final: { x: 0.35, y: 0.08, zRotation: -0.8, scale: 0.95 },
+      final: { x: 0.35, y: 0.08, zRotation: widePortraitPhone ? -1.04 : -0.8, scale: 0.95 },
     };
   }
   return {
     initial: { x: -0.5, y: 0.06, zRotation: -0.75, scale: 1.05 },
-    final: { x: 0.2, y: 0.16, zRotation: -0.86, scale: 1.04 },
+    final: { x: 0.2, y: 0.16, zRotation: widePortraitPhone ? -1.04 : -0.86, scale: 1.04 },
   };
 }
 
@@ -46,8 +50,6 @@ export function createHeroMotion({
 }) {
   const root = document.documentElement;
   const atmosphere = stage.querySelector('.hero-atmosphere');
-  const header = stage.querySelector('.site-header');
-  const headerLogo = header.querySelector('.dyson-logo img');
   const intro = stage.querySelector('.hero-intro');
   const scrollCue = stage.querySelector('.scroll-cue');
   const interactionCue = stage.querySelector('.interaction-cue');
@@ -69,11 +71,10 @@ export function createHeroMotion({
   }
 
   function resetAnimatedElements() {
-    gsap.set([atmosphere, header, intro, scrollCue, interactionCue, becomes, stage], {
+    gsap.set([atmosphere, intro, scrollCue, interactionCue, becomes, stage], {
       clearProps: 'all',
     });
     gsap.set(letters, { clearProps: 'transform' });
-    gsap.set(headerLogo, { clearProps: 'filter' });
   }
 
   function placeLettersAtStart(isMobile) {
@@ -106,10 +107,8 @@ export function createHeroMotion({
     setModelOpacity(1);
     updateInteraction(true);
     gsap.set(atmosphere, { opacity: 1 });
-    gsap.set(stage, { backgroundColor: '#080708' });
-    gsap.set(becomes, { color: '#ffffff' });
-    gsap.set(header, { color: '#292929', backgroundColor: '#e6d9d4' });
-    if (window.innerWidth < 1024) gsap.set(headerLogo, { filter: 'brightness(0.17)' });
+    gsap.set(stage, { '--hero-stage-color': '#080708' });
+    gsap.set(becomes, { '--hero-becomes-color': '#ffffff' });
     gsap.set(intro, { autoAlpha: 1, y: 0 });
     gsap.set(scrollCue, { autoAlpha: 0 });
     gsap.set(interactionCue, { autoAlpha: 1, y: 0 });
@@ -123,7 +122,7 @@ export function createHeroMotion({
     sceneContainer.style.removeProperty('--hero-hit-area');
     resetAnimatedElements();
 
-    if (window.innerWidth < 1024) {
+    if (window.innerWidth < HERO_FRAMING_BREAKPOINT) {
       const slot = visualSlot.getBoundingClientRect();
       const frame = stage.getBoundingClientRect();
       const canvas = sceneContainer.getBoundingClientRect();
@@ -159,8 +158,8 @@ export function createHeroMotion({
     const isMobile = window.innerWidth < 768;
     const poses = getHeroProductPose();
     poses.final = frameHero(poses.final);
-    if (window.innerWidth < 1024) {
-      poses.initial = frameHero({ ...poses.final, scale: poses.final.scale * 0.86, zRotation: -0.66 });
+    if (window.innerWidth < HERO_FRAMING_BREAKPOINT) {
+      poses.initial = frameHero({ ...poses.final, zRotation: poses.final.zRotation + 0.07 });
     }
     placeLettersAtStart(isMobile);
     setProductPose(visualGroup, poses.initial);
@@ -204,15 +203,10 @@ export function createHeroMotion({
         duration: 0.6,
       }, 0.15)
       .to(atmosphere, { opacity: 1, duration: 0.3 }, 0.45)
-      .to(stage, { backgroundColor: '#080708', duration: 0.3 }, 0.45)
-      .to(becomes, { color: '#ffffff', duration: 0.3 }, 0.45)
-      .to(header, { color: '#292929', backgroundColor: '#e6d9d4', duration: 0.3 }, 0.45)
+      .to(stage, { '--hero-stage-color': '#080708', duration: 0.3 }, 0.45)
+      .to(becomes, { '--hero-becomes-color': '#ffffff', duration: 0.3 }, 0.45)
       .to(intro, { autoAlpha: 1, y: 0, duration: 0.22 }, 0.75)
       .to(interactionCue, { autoAlpha: 1, y: 0, duration: 0.18 }, 0.82);
-
-    if (window.innerWidth < 1024) {
-      timeline.fromTo(headerLogo, { filter: 'brightness(1)' }, { filter: 'brightness(0.17)', duration: 0.3 }, 0.45);
-    }
 
     timeline.progress(progress);
     updateInteraction(progress >= 0.97);

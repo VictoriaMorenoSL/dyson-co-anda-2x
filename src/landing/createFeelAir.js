@@ -185,6 +185,7 @@ function createAirflow(model, addFrameCallback, reducedMotion) {
 export function createFeelAir({
   section,
   styleSection,
+  sceneContainer,
   frameStyle,
   frameFeel,
   visualGroup,
@@ -437,6 +438,21 @@ export function createFeelAir({
   reducedMotion.addEventListener('change', handleMotionPreference);
   buildMotion();
 
+  // Fade the shared canvas as a layer so the Airwrap and airflow leave together.
+  // This does not compete with entrance opacity or change the product's pose.
+  const syncExitOpacity = ({ progress }) => {
+    const opacity = reducedMotion.matches ? Number(progress < 1) : 1 - progress;
+    sceneContainer.style.setProperty('--feel-air-exit-opacity', opacity);
+  };
+  const exitTrigger = ScrollTrigger.create({
+    id: 'feel-air-exit',
+    trigger: section,
+    start: 'bottom 60%',
+    end: 'bottom 18%',
+    onUpdate: syncExitOpacity,
+    onRefresh: syncExitOpacity,
+  });
+
   return () => {
     window.clearTimeout(resizeTimer);
     section.removeEventListener('pointermove', handlePointerMove);
@@ -448,6 +464,8 @@ export function createFeelAir({
     transitionTimeline?.scrollTrigger?.kill();
     transitionTimeline?.kill();
     lifecycleTrigger?.kill();
+    exitTrigger.kill();
+    sceneContainer.style.removeProperty('--feel-air-exit-opacity');
     airflow.destroy();
   };
 }

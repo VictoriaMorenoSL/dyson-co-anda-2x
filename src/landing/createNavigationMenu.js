@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 export function createNavigationMenu({ toggle, menu, page }) {
   if (!toggle || !menu) return () => {};
 
+  const header = toggle.closest('.site-header');
   const panel = menu.querySelector('.navigation-menu__panel');
   const closeButton = menu.querySelector('.navigation-menu__close');
   const links = [...menu.querySelectorAll('.navigation-menu__nav a')];
@@ -174,6 +175,9 @@ export function createNavigationMenu({ toggle, menu, page }) {
   }
 
   const headerLinks = [...document.querySelectorAll('.site-header a[href^="#"]')];
+  const syncHeaderSize = () => header?.classList.toggle('is-compact', window.scrollY > 8);
+  syncHeaderSize();
+  window.addEventListener('scroll', syncHeaderSize, { passive: true });
   toggle.addEventListener('click', handleToggle);
   closeButton.addEventListener('click', handleCloseClick);
   links.forEach((link) => link.addEventListener('click', handleLinkClick));
@@ -182,6 +186,7 @@ export function createNavigationMenu({ toggle, menu, page }) {
 
   return () => {
     timeline?.kill();
+    window.removeEventListener('scroll', syncHeaderSize);
     toggle.removeEventListener('click', handleToggle);
     closeButton.removeEventListener('click', handleCloseClick);
     links.forEach((link) => link.removeEventListener('click', handleLinkClick));

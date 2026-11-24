@@ -1,7 +1,8 @@
 import './styles.css';
+import './landing/colorTheme.js';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { createFallbackScene, createScene } from './scene/createScene.js';
-import { createHeroMotion } from './landing/createHeroMotion.js';
+import { createHeroMotion, HERO_FRAMING_BREAKPOINT } from './landing/createHeroMotion.js';
 import { createReactiveHeroBackground } from './landing/createReactiveHeroBackground.js';
 import { createStyleExperience } from './landing/createStyleExperience.js';
 import { createCustomCursor } from './landing/createCustomCursor.js';
@@ -79,13 +80,13 @@ let destroyTechnologyVideo = () => {};
 let destroyFooterMotion = () => {};
 
 document.fonts.ready.then(() => {
-  const frameProduct = (frame, selector, includeAirflow = false) => {
+  const frameProduct = (frame, selector, options) => {
     const slot = frame.querySelector(selector);
-    return (pose) => fitProductPose(studio, frame, slot, pose, includeAirflow);
+    return (pose) => fitProductPose(studio, frame, slot, pose, options);
   };
-  const frameHero = frameProduct(stage, '.hero-visual-space');
+  const frameHero = frameProduct(stage, '.hero-visual-space', { breakpoint: HERO_FRAMING_BREAKPOINT });
   const frameStyle = frameProduct(styleSection.querySelector('.create-style-content'), '.create-style-visual-space');
-  const frameFeel = frameProduct(feelAirSection.querySelector('.feel-air__content'), '.feel-air__visual-space', true);
+  const frameFeel = frameProduct(feelAirSection.querySelector('.feel-air__content'), '.feel-air__visual-space', { airflow: true });
 
   destroyMotion = createHeroMotion({
     stage,
@@ -108,6 +109,7 @@ document.fonts.ready.then(() => {
   destroyFeelAir = createFeelAir({
     section: feelAirSection,
     styleSection,
+    sceneContainer,
     frameStyle,
     frameFeel,
     visualGroup: studio.visualGroup,

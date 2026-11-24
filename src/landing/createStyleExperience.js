@@ -75,9 +75,8 @@ export function createStyleExperience({
   const cards = [...section.querySelectorAll('.style-card')];
   const heroContent = [
     heroStage.querySelector('.hero-typography'),
-    heroStage.querySelector('.hero-intro'),
-    heroStage.querySelector('.interaction-cue'),
-    heroStage.querySelector('.site-header'),
+    // The Hero owns the entrance of the children. Only animate their wrapper here.
+    heroStage.querySelector('.hero-end-content'),
   ];
   const animatedCopy = [title, features];
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
