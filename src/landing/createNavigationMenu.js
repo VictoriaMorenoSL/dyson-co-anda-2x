@@ -15,7 +15,9 @@ export function createNavigationMenu({ toggle, menu, page }) {
   let timeline;
 
   const preventBackgroundScroll = (event) => {
-    if (open) event.preventDefault();
+    if (!open) return;
+    const canScrollMenu = panel.contains(event.target) && panel.scrollHeight > panel.clientHeight;
+    if (!canScrollMenu) event.preventDefault();
   };
 
   function lockPage() {

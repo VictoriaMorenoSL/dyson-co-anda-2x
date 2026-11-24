@@ -10,7 +10,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 function getFeelPose(viewportWidth = window.innerWidth) {
   if (viewportWidth <= 680) {
-    return { x: 0.48, y: -0.35, zRotation: 1.18, scale: 0.58 };
+    return { x: 0.48, y: -0.35, zRotation: 1.18, scale: 0.68 };
   }
   if (viewportWidth <= 900) {
     return { x: 1.75, y: 0.35, zRotation: 1.28, scale: 0.75 };
@@ -185,6 +185,8 @@ function createAirflow(model, addFrameCallback, reducedMotion) {
 export function createFeelAir({
   section,
   styleSection,
+  frameStyle,
+  frameFeel,
   visualGroup,
   model,
   setModelOpacity,
@@ -282,8 +284,8 @@ export function createFeelAir({
     lifecycleTrigger?.kill();
     airflow.setReducedMotion(reducedMotion.matches);
 
-    const stylePose = getStylePose();
-    const feelPose = getFeelPose();
+    const stylePose = frameStyle(getStylePose());
+    const feelPose = frameFeel(getFeelPose());
     gsap.set([heading, copy, ...titleLines], {
       clearProps: 'transform,opacity,visibility,letter-spacing',
     });
@@ -327,8 +329,8 @@ export function createFeelAir({
     }
 
     const airflowReveal = { value: 0 };
-    const titleSpread = window.innerWidth <= 680 ? 28 : window.innerWidth <= 900 ? 48 : 86;
-    const initialTracking = window.innerWidth <= 680 ? '0.12em' : '0.24em';
+    const titleSpread = window.innerWidth < 768 ? 12 : window.innerWidth < 1024 ? 42 : 86;
+    const initialTracking = window.innerWidth < 768 ? '0.04em' : '0.24em';
     transitionTimeline = gsap.timeline({
       defaults: { ease: 'none' },
       scrollTrigger: {

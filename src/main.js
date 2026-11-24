@@ -13,6 +13,7 @@ import { createFeelAir } from './landing/createFeelAir.js';
 import { createTechnologyVideo } from './landing/createTechnologyVideo.js';
 import { createFooterMotion } from './landing/createFooterMotion.js';
 import { createNavigationMenu } from './landing/createNavigationMenu.js';
+import { fitProductPose } from './landing/fitProductPose.js';
 
 ScrollTrigger.config({ ignoreMobileResize: true });
 
@@ -78,8 +79,18 @@ let destroyTechnologyVideo = () => {};
 let destroyFooterMotion = () => {};
 
 document.fonts.ready.then(() => {
+  const frameProduct = (frame, selector, includeAirflow = false) => {
+    const slot = frame.querySelector(selector);
+    return (pose) => fitProductPose(studio, frame, slot, pose, includeAirflow);
+  };
+  const frameHero = frameProduct(stage, '.hero-visual-space');
+  const frameStyle = frameProduct(styleSection.querySelector('.create-style-content'), '.create-style-visual-space');
+  const frameFeel = frameProduct(feelAirSection.querySelector('.feel-air__content'), '.feel-air__visual-space', true);
+
   destroyMotion = createHeroMotion({
     stage,
+    sceneContainer,
+    frameHero,
     visualGroup: studio.visualGroup,
     setModelOpacity: studio.setModelOpacity,
     setInteractionEnabled: studio.setInteractionEnabled,
@@ -87,6 +98,8 @@ document.fonts.ready.then(() => {
   destroyStyleExperience = createStyleExperience({
     section: styleSection,
     heroStage: stage,
+    frameHero,
+    frameStyle,
     visualGroup: studio.visualGroup,
     model: studio.model,
     setModelOpacity: studio.setModelOpacity,
@@ -95,6 +108,8 @@ document.fonts.ready.then(() => {
   destroyFeelAir = createFeelAir({
     section: feelAirSection,
     styleSection,
+    frameStyle,
+    frameFeel,
     visualGroup: studio.visualGroup,
     model: studio.model,
     setModelOpacity: studio.setModelOpacity,
@@ -116,6 +131,7 @@ document.fonts.ready.then(() => {
   destroyEditorialCarousel = createEditorialCarousel({ section: carouselSection });
   destroyPossibilitiesMotion = createPossibilitiesMotion({
     section: possibilitiesSection,
+    nextSection: meetProductSection,
     modelBoundarySection: carouselSection,
     setModelOpacity: studio.setModelOpacity,
     setInteractionEnabled: studio.setInteractionEnabled,
@@ -123,7 +139,6 @@ document.fonts.ready.then(() => {
   });
   destroyMeetProduct = createMeetProduct({
     section: meetProductSection,
-    previousSection: possibilitiesSection,
   });
   destroyFooterMotion = createFooterMotion({ footer });
 });

@@ -5,6 +5,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function createPossibilitiesMotion({
   section,
+  nextSection,
   modelBoundarySection = section,
   setModelOpacity,
   setInteractionEnabled,
@@ -25,6 +26,7 @@ export function createPossibilitiesMotion({
   let zoomTimeline;
   let modelBoundaryTrigger;
   let resizeTimer;
+  let stageSize = '';
   let videoRevealActive = false;
 
   function updateVideoReveal(progress, force = false) {
@@ -101,6 +103,7 @@ export function createPossibilitiesMotion({
   }
 
   function buildTimelines(typographyProgress = 0, zoomProgress = 0) {
+    stageSize = `${stage.clientWidth}x${stage.clientHeight}`;
     typographyTimeline?.scrollTrigger?.kill();
     typographyTimeline?.kill();
     zoomTimeline?.scrollTrigger?.kill();
@@ -161,7 +164,8 @@ export function createPossibilitiesMotion({
         id: 'possibilities-logo-zoom',
         trigger: section,
         start: () => `top+=${stage.clientHeight + compositionHoldDistance} top`,
-        end: 'bottom bottom',
+        endTrigger: nextSection,
+        end: 'top bottom',
         scrub: 1.1,
         invalidateOnRefresh: true,
         onUpdate: (self) => updateVideoReveal(self.progress),
@@ -199,6 +203,7 @@ export function createPossibilitiesMotion({
   }
 
   function handleResize() {
+    if (stageSize === `${stage.clientWidth}x${stage.clientHeight}`) return;
     window.clearTimeout(resizeTimer);
     resizeTimer = window.setTimeout(() => {
       const typographyProgress = typographyTimeline?.progress() ?? 0;

@@ -3,10 +3,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function createMeetProduct({ section, previousSection }) {
+export function createMeetProduct({ section }) {
   if (!section) return () => {};
 
-  const previousStage = previousSection?.querySelector('.possibilities-stage');
   const gallery = section.querySelector('.meet-gallery');
   const track = gallery.querySelector('.meet-gallery__track');
   const originalSlides = [...track.querySelectorAll('.meet-gallery__slide')];
@@ -39,9 +38,7 @@ export function createMeetProduct({ section, previousSection }) {
   let scrollFrame = 0;
   let loopTimer = 0;
   let introTimeline;
-  let stackTimeline;
   let resizeTimer;
-  const stackProgress = { value: 0 };
 
   function normalizeIndex(index) {
     return (index + originalSlides.length) % originalSlides.length;
@@ -226,41 +223,6 @@ export function createMeetProduct({ section, previousSection }) {
       );
   }
 
-  function buildStackTransition() {
-    stackTimeline?.scrollTrigger?.kill();
-    stackTimeline?.kill();
-    previousStage?.classList.remove('is-meet-stack-base');
-    stackProgress.value = 0;
-
-    if (!previousStage || reducedMotion.matches) return;
-
-    const syncStackBase = (trigger) => {
-      previousStage.classList.toggle('is-meet-stack-base', trigger.isActive);
-    };
-
-    stackTimeline = gsap.timeline({
-      defaults: { ease: 'none' },
-      scrollTrigger: {
-        id: 'meet-product-stack',
-        trigger: section,
-        start: 'top bottom',
-        end: 'top top',
-        scrub: true,
-        invalidateOnRefresh: true,
-        onEnter: syncStackBase,
-        onEnterBack: syncStackBase,
-        onLeave: syncStackBase,
-        onLeaveBack: syncStackBase,
-        onRefresh: syncStackBase,
-      },
-    });
-
-    // The ivory section advances naturally with the document while the last
-    // audiovisual frame is held to the viewport beneath it. Keeping the tall
-    // Meet section in normal flow lets its remaining content continue scrolling.
-    stackTimeline.to(stackProgress, { value: 1, duration: 1 });
-  }
-
   const slideHandlers = slides.map((slide, index) => {
     const click = (event) => {
       if (suppressClick) {
@@ -285,14 +247,12 @@ export function createMeetProduct({ section, previousSection }) {
     resizeTimer = window.setTimeout(() => centerSlide(activeIndex, 'auto'), 120);
   };
   const handleMotionPreference = () => {
-    buildStackTransition();
     buildEntrance();
     ScrollTrigger.refresh();
   };
 
   window.addEventListener('resize', handleResize);
   reducedMotion.addEventListener('change', handleMotionPreference);
-  buildStackTransition();
   buildEntrance();
   window.requestAnimationFrame(() => centerPhysicalSlide(originalSlides.length, 'auto'));
 
@@ -313,9 +273,6 @@ export function createMeetProduct({ section, previousSection }) {
     });
     introTimeline?.scrollTrigger?.kill();
     introTimeline?.kill();
-    stackTimeline?.scrollTrigger?.kill();
-    stackTimeline?.kill();
-    previousStage?.classList.remove('is-meet-stack-base');
     [...leadingClones, ...trailingClones].forEach((clone) => clone.remove());
   };
 }

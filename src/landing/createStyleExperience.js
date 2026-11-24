@@ -57,6 +57,8 @@ function setPose(group, pose) {
 export function createStyleExperience({
   section,
   heroStage,
+  frameHero,
+  frameStyle,
   visualGroup,
   model,
   setModelOpacity,
@@ -128,8 +130,8 @@ export function createStyleExperience({
     scrollTimeline?.scrollTrigger?.kill();
     scrollTimeline?.kill();
 
-    const heroPose = getHeroProductPose().final;
-    const stylePose = getStylePose();
+    const heroPose = frameHero(getHeroProductPose().final);
+    const stylePose = frameStyle(getStylePose());
     gsap.set(content, { autoAlpha: 0 });
     gsap.set(atmosphere, { opacity: 1 });
     gsap.set([title, features], { y: 26 });
@@ -209,7 +211,12 @@ export function createStyleExperience({
         { x: stylePose.scale, y: stylePose.scale, z: stylePose.scale, duration: 1 },
         0,
       )
-      .to(heroContent, { autoAlpha: 0, y: -18, duration: 0.42 }, 0)
+      .fromTo(
+        heroContent,
+        { autoAlpha: 1, y: 0 },
+        { autoAlpha: 0, y: -18, duration: 0.42, immediateRender: false },
+        0,
+      )
       .to(content, { autoAlpha: 1, duration: 0.38 }, 0.34)
       .to([title, features], { y: 0, duration: 0.42, ease: 'power2.out' }, 0.38)
       .to(cards, {

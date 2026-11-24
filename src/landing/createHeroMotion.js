@@ -38,6 +38,8 @@ function setProductPose(group, pose) {
 
 export function createHeroMotion({
   stage,
+  sceneContainer,
+  frameHero,
   visualGroup,
   setModelOpacity,
   setInteractionEnabled,
@@ -45,14 +47,17 @@ export function createHeroMotion({
   const root = document.documentElement;
   const atmosphere = stage.querySelector('.hero-atmosphere');
   const header = stage.querySelector('.site-header');
+  const headerLogo = header.querySelector('.dyson-logo img');
   const intro = stage.querySelector('.hero-intro');
   const scrollCue = stage.querySelector('.scroll-cue');
   const interactionCue = stage.querySelector('.interaction-cue');
+  const visualSlot = stage.querySelector('.hero-visual-space');
   const becomes = stage.querySelector('.word-becomes');
   const letters = [...stage.querySelectorAll('.hero-letter')];
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const modelFade = { value: 0 };
   let timeline;
+  let heroHitArea;
   let resizeTimer;
   let interactionActive = false;
   let viewportWidth = window.innerWidth;
@@ -68,6 +73,7 @@ export function createHeroMotion({
       clearProps: 'all',
     });
     gsap.set(letters, { clearProps: 'transform' });
+    gsap.set(headerLogo, { clearProps: 'filter' });
   }
 
   function placeLettersAtStart(isMobile) {
@@ -79,7 +85,11 @@ export function createHeroMotion({
       const index = Number(letter.dataset.letterIndex);
       const [xRatio, yRatio] = layout[word][index];
       const finalRect = letter.getBoundingClientRect();
-      const targetX = stageRect.left + stageRect.width * xRatio;
+      const centerX = stageRect.left + stageRect.width * xRatio;
+      const inset = finalRect.width / 2 + 12;
+      const targetX = isMobile
+        ? gsap.utils.clamp(stageRect.left + inset, stageRect.right - inset, centerX)
+        : centerX;
       const targetY = stageRect.top + stageRect.height * yRatio;
       gsap.set(letter, {
         x: targetX - finalRect.left - finalRect.width / 2,
@@ -91,7 +101,7 @@ export function createHeroMotion({
   function showFinalState() {
     const { final } = getHeroProductPose();
     resetAnimatedElements();
-    setProductPose(visualGroup, final);
+    setProductPose(visualGroup, frameHero(final));
     modelFade.value = 1;
     setModelOpacity(1);
     updateInteraction(true);
@@ -99,6 +109,7 @@ export function createHeroMotion({
     gsap.set(stage, { backgroundColor: '#080708' });
     gsap.set(becomes, { color: '#ffffff' });
     gsap.set(header, { color: '#292929', backgroundColor: '#e6d9d4' });
+    if (window.innerWidth < 1024) gsap.set(headerLogo, { filter: 'brightness(0.17)' });
     gsap.set(intro, { autoAlpha: 1, y: 0 });
     gsap.set(scrollCue, { autoAlpha: 0 });
     gsap.set(interactionCue, { autoAlpha: 1, y: 0 });
@@ -108,15 +119,49 @@ export function createHeroMotion({
   function buildTimeline(progress = 0) {
     timeline?.scrollTrigger?.kill();
     timeline?.kill();
+    heroHitArea?.kill();
+    sceneContainer.style.removeProperty('--hero-hit-area');
     resetAnimatedElements();
+
+    if (window.innerWidth < 1024) {
+      const slot = visualSlot.getBoundingClientRect();
+      const frame = stage.getBoundingClientRect();
+      const canvas = sceneContainer.getBoundingClientRect();
+      const inset = [
+        slot.top - frame.top - canvas.top,
+        canvas.right - slot.right,
+        canvas.bottom - (slot.bottom - frame.top),
+        slot.left - canvas.left,
+      ].map((edge) => `${Math.max(edge, 0)}px`).join(' ');
+
+      // Keep the fixed interactive canvas out of the CTA and navigation hit areas.
+      const setHitArea = () => sceneContainer.style.setProperty('--hero-hit-area', `inset(${inset})`);
+      const clearHitArea = () => sceneContainer.style.removeProperty('--hero-hit-area');
+      heroHitArea = ScrollTrigger.create({
+        trigger: stage.parentElement,
+        start: 'top top',
+        end: reducedMotion.matches ? 'bottom top' : 'bottom bottom',
+        refreshPriority: -1,
+        onRefresh: (trigger) => {
+          if (trigger.scroll() <= trigger.end) setHitArea();
+          else clearHitArea();
+        },
+        onLeave: clearHitArea,
+        onEnterBack: setHitArea,
+      });
+    }
 
     if (reducedMotion.matches) {
       showFinalState();
       return;
     }
 
-    const isMobile = window.matchMedia('(max-width: 680px)').matches;
+    const isMobile = window.innerWidth < 768;
     const poses = getHeroProductPose();
+    poses.final = frameHero(poses.final);
+    if (window.innerWidth < 1024) {
+      poses.initial = frameHero({ ...poses.final, scale: poses.final.scale * 0.86, zRotation: -0.66 });
+    }
     placeLettersAtStart(isMobile);
     setProductPose(visualGroup, poses.initial);
     modelFade.value = 0;
@@ -132,7 +177,7 @@ export function createHeroMotion({
         id: 'dyson-hero',
         trigger: stage.parentElement,
         start: 'top top',
-        end: () => `+=${window.innerHeight * (isMobile ? 1.45 : 2)}`,
+        end: () => `+=${(isMobile ? stage.clientHeight * 1.45 : window.innerHeight * 2)}`,
         pin: stage,
         scrub: isMobile ? 0.72 : 1.05,
         invalidateOnRefresh: true,
@@ -164,6 +209,10 @@ export function createHeroMotion({
       .to(header, { color: '#292929', backgroundColor: '#e6d9d4', duration: 0.3 }, 0.45)
       .to(intro, { autoAlpha: 1, y: 0, duration: 0.22 }, 0.75)
       .to(interactionCue, { autoAlpha: 1, y: 0, duration: 0.18 }, 0.82);
+
+    if (window.innerWidth < 1024) {
+      timeline.fromTo(headerLogo, { filter: 'brightness(1)' }, { filter: 'brightness(0.17)', duration: 0.3 }, 0.45);
+    }
 
     timeline.progress(progress);
     updateInteraction(progress >= 0.97);
@@ -197,5 +246,7 @@ export function createHeroMotion({
     setModelOpacity(1);
     timeline?.scrollTrigger?.kill();
     timeline?.kill();
+    heroHitArea?.kill();
+    sceneContainer.style.removeProperty('--hero-hit-area');
   };
 }
