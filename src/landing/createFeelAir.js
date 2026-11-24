@@ -9,6 +9,9 @@ import { getStylePose } from './createStyleExperience.js';
 gsap.registerPlugin(ScrollTrigger);
 
 function getFeelPose(viewportWidth = window.innerWidth) {
+  if (viewportWidth < 768 && window.matchMedia('(min-height: 620px) and (orientation: portrait)').matches) {
+    return { x: 0, y: 0.1, zRotation: 0.27, scale: 1.85 };
+  }
   if (viewportWidth <= 680) {
     return { x: 0.48, y: -0.35, zRotation: 1.18, scale: 0.68 };
   }
@@ -443,6 +446,7 @@ export function createFeelAir({
   const syncExitOpacity = ({ progress }) => {
     const opacity = reducedMotion.matches ? Number(progress < 1) : 1 - progress;
     sceneContainer.style.setProperty('--feel-air-exit-opacity', opacity);
+    sceneContainer.classList.toggle('is-past-feel', opacity <= 0.002);
   };
   const exitTrigger = ScrollTrigger.create({
     id: 'feel-air-exit',
@@ -466,6 +470,7 @@ export function createFeelAir({
     lifecycleTrigger?.kill();
     exitTrigger.kill();
     sceneContainer.style.removeProperty('--feel-air-exit-opacity');
+    sceneContainer.classList.remove('is-past-feel');
     airflow.destroy();
   };
 }

@@ -39,6 +39,7 @@ export function createMeetProduct({ section }) {
   let loopTimer = 0;
   let introTimeline;
   let resizeTimer;
+  const supportsScrollEnd = 'onscrollend' in gallery;
 
   function normalizeIndex(index) {
     return (index + originalSlides.length) % originalSlides.length;
@@ -105,12 +106,13 @@ export function createMeetProduct({ section }) {
   }
 
   function normalizeLoopPosition() {
+    if (pointerId !== null) return;
     const physicalIndex = getClosestPhysicalIndex();
     const count = originalSlides.length;
     let targetIndex = physicalIndex;
     if (physicalIndex < count) targetIndex = physicalIndex + count;
     if (physicalIndex >= count * 2) targetIndex = physicalIndex - count;
-    if (targetIndex !== physicalIndex) centerPhysicalSlide(targetIndex, 'auto');
+    if (targetIndex !== physicalIndex) centerPhysicalSlide(targetIndex, 'instant');
   }
 
   function handleScroll() {
@@ -121,24 +123,28 @@ export function createMeetProduct({ section }) {
       const slide = slides[physicalIndex];
       updateActive(Number(slide.dataset.galleryIndex), slide);
     });
-    loopTimer = window.setTimeout(normalizeLoopPosition, 140);
+    if (!supportsScrollEnd) loopTimer = window.setTimeout(normalizeLoopPosition, 220);
   }
 
   function handlePointerDown(event) {
-    if (event.button !== 0) return;
+    // Touch uses native momentum and snap. Custom dragging is for the mouse.
+    if (event.pointerType !== 'mouse' || event.button !== 0) return;
     pointerId = event.pointerId;
     dragStartX = event.clientX;
     dragStartScroll = gallery.scrollLeft;
     didDrag = false;
-    gallery.classList.add('is-dragging');
-    gallery.setPointerCapture(pointerId);
   }
 
   function handlePointerMove(event) {
     if (event.pointerId !== pointerId) return;
     const distance = event.clientX - dragStartX;
-    if (Math.abs(distance) > 5) didDrag = true;
-    if (didDrag) event.preventDefault();
+    if (!didDrag) {
+      if (Math.abs(distance) <= 5) return;
+      didDrag = true;
+      gallery.classList.add('is-dragging');
+      gallery.setPointerCapture(pointerId);
+    }
+    event.preventDefault();
     gallery.scrollLeft = dragStartScroll - distance;
   }
 
@@ -237,9 +243,10 @@ export function createMeetProduct({ section }) {
   });
 
   gallery.addEventListener('scroll', handleScroll, { passive: true });
+  if (supportsScrollEnd) gallery.addEventListener('scrollend', normalizeLoopPosition);
   gallery.addEventListener('pointerdown', handlePointerDown);
   gallery.addEventListener('pointermove', handlePointerMove);
-  gallery.addEventListener('pointerup', finishDrag);
+  window.addEventListener('pointerup', finishDrag);
   gallery.addEventListener('pointercancel', finishDrag);
 
   const handleResize = () => {
@@ -263,9 +270,10 @@ export function createMeetProduct({ section }) {
     window.removeEventListener('resize', handleResize);
     reducedMotion.removeEventListener('change', handleMotionPreference);
     gallery.removeEventListener('scroll', handleScroll);
+    gallery.removeEventListener('scrollend', normalizeLoopPosition);
     gallery.removeEventListener('pointerdown', handlePointerDown);
     gallery.removeEventListener('pointermove', handlePointerMove);
-    gallery.removeEventListener('pointerup', finishDrag);
+    window.removeEventListener('pointerup', finishDrag);
     gallery.removeEventListener('pointercancel', finishDrag);
     slideHandlers.forEach(({ slide, click }) => {
       slide.removeEventListener('click', click);

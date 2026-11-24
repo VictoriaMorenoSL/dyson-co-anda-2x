@@ -36,6 +36,9 @@ const STYLE_STATES = Object.freeze({
 });
 
 export function getStylePose(viewportWidth = window.innerWidth) {
+  if (viewportWidth < 768 && window.matchMedia('(min-height: 620px) and (orientation: portrait)').matches) {
+    return { x: 0, y: 0.58, zRotation: 0.24, scale: 1.85 };
+  }
   if (viewportWidth <= 680) {
     return { x: 0.95, y: 0.82, zRotation: 0, scale: 0.76 };
   }

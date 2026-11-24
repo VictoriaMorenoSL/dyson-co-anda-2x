@@ -21,6 +21,7 @@ export function createPossibilitiesMotion({
   const submark = section.querySelector('.possibilities-submark');
   const leftCopy = section.querySelector('.possibilities-side--left');
   const rightCopy = section.querySelector('.possibilities-side--right');
+  const scrollCue = section.querySelector('.possibilities-scroll-cue');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let typographyTimeline;
   let zoomTimeline;
@@ -50,7 +51,6 @@ export function createPossibilitiesMotion({
       },
       onLeaveBack: () => {
         setModelOpacity?.(1);
-        setInteractionEnabled?.(true);
       },
     });
   }
@@ -109,7 +109,7 @@ export function createPossibilitiesMotion({
     zoomTimeline?.scrollTrigger?.kill();
     zoomTimeline?.kill();
     gsap.set([leftCopy, rightCopy], { clearProps: 'transform' });
-    gsap.set([leftCopy, rightCopy, submark], { clearProps: 'opacity,visibility' });
+    gsap.set([leftCopy, rightCopy, submark, scrollCue], { clearProps: 'opacity,visibility' });
     gsap.set(logoCore, { clearProps: 'transform,transform-origin' });
     gsap.set(video, { autoAlpha: 0 });
     gsap.set(trailerButton, {
@@ -122,7 +122,7 @@ export function createPossibilitiesMotion({
     const offsets = getMotionOffsets();
 
     if (reducedMotion.matches) {
-      gsap.set([leftCopy, rightCopy, submark, logoCore], { autoAlpha: 0 });
+      gsap.set([leftCopy, rightCopy, submark, logoCore, scrollCue], { autoAlpha: 0 });
       gsap.set(video, { autoAlpha: 1 });
       gsap.set(trailerButton, {
         autoAlpha: 1,
@@ -173,7 +173,7 @@ export function createPossibilitiesMotion({
     });
 
     zoomTimeline
-      .to([leftCopy, rightCopy, submark], {
+      .to([leftCopy, rightCopy, submark, scrollCue], {
         autoAlpha: 0,
         duration: 0.2,
         ease: 'power2.out',

@@ -126,74 +126,76 @@
 
             <div class="create-style-visual-space" aria-hidden="true"></div>
 
-            <dl class="style-features" aria-live="polite">
-              <div>
-                <dt>Accesorio</dt>
-                <dd data-style-accessory>Rizador Co-anda2x™</dd>
-              </div>
-              <div>
-                <dt>Tecnología</dt>
-                <dd data-style-technology>Efecto Coanda</dd>
-              </div>
-              <div>
-                <dt>Resultado</dt>
-                <dd data-style-result>Rizos definidos</dd>
-              </div>
-            </dl>
+            <div class="style-info">
+              <dl class="style-features" aria-live="polite">
+                <div>
+                  <dt>Accesorio</dt>
+                  <dd data-style-accessory>Rizador Co-anda2x™</dd>
+                </div>
+                <div>
+                  <dt>Tecnología</dt>
+                  <dd data-style-technology>Efecto Coanda</dd>
+                </div>
+                <div>
+                  <dt>Resultado</dt>
+                  <dd data-style-result>Rizos definidos</dd>
+                </div>
+              </dl>
 
-            <div class="style-selector" aria-label="Selecciona un resultado de estilizado">
-              <button
-                class="style-card is-active"
-                type="button"
-                data-style="curls"
-                aria-label="Seleccionar Rizos definidos"
-                aria-pressed="true"
-              >
-                <picture>
-                  <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello.jpg" />
-                  <img src="/assets-proyecto/Imgs/optimized/Cabello.png" alt="" loading="lazy" decoding="async" />
-                </picture>
-                <span>Rizos</span>
-              </button>
-              <button
-                class="style-card"
-                type="button"
-                data-style="waves"
-                aria-label="Seleccionar Ondas suaves"
-                aria-pressed="false"
-              >
-                <picture>
-                  <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello-2.jpg" />
-                  <img src="/assets-proyecto/Imgs/optimized/Cabello-2.png" alt="" loading="lazy" decoding="async" />
-                </picture>
-                <span>Ondas</span>
-              </button>
-              <button
-                class="style-card"
-                type="button"
-                data-style="smooth"
-                aria-label="Seleccionar Liso y suave"
-                aria-pressed="false"
-              >
-                <picture>
-                  <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello-3.jpg" />
-                  <img src="/assets-proyecto/Imgs/optimized/Cabello-3.png" alt="" loading="lazy" decoding="async" />
-                </picture>
-                <span>Liso</span>
-              </button>
-              <button
-                class="style-card"
-                type="button"
-                data-style="volume"
-                aria-label="Seleccionar Volumen y forma"
-                aria-pressed="false"
-              >
-                <picture>
-                  <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello-4.jpg" />
-                  <img src="/assets-proyecto/Imgs/optimized/Cabello-4.png" alt="" loading="lazy" decoding="async" />
-                </picture>
-                <span>Volumen</span>
-              </button>
+              <div class="style-selector" aria-label="Selecciona un resultado de estilizado">
+                <button
+                  class="style-card is-active"
+                  type="button"
+                  data-style="curls"
+                  aria-label="Seleccionar Rizos definidos"
+                  aria-pressed="true"
+                >
+                  <picture>
+                    <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello.jpg" />
+                    <img src="/assets-proyecto/Imgs/optimized/Cabello.png" alt="" loading="lazy" decoding="async" />
+                  </picture>
+                  <span>Rizos</span>
+                </button>
+                <button
+                  class="style-card"
+                  type="button"
+                  data-style="waves"
+                  aria-label="Seleccionar Ondas suaves"
+                  aria-pressed="false"
+                >
+                  <picture>
+                    <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello-2.jpg" />
+                    <img src="/assets-proyecto/Imgs/optimized/Cabello-2.png" alt="" loading="lazy" decoding="async" />
+                  </picture>
+                  <span>Ondas</span>
+                </button>
+                <button
+                  class="style-card"
+                  type="button"
+                  data-style="smooth"
+                  aria-label="Seleccionar Liso y suave"
+                  aria-pressed="false"
+                >
+                  <picture>
+                    <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello-3.jpg" />
+                    <img src="/assets-proyecto/Imgs/optimized/Cabello-3.png" alt="" loading="lazy" decoding="async" />
+                  </picture>
+                  <span>Liso</span>
+                </button>
+                <button
+                  class="style-card"
+                  type="button"
+                  data-style="volume"
+                  aria-label="Seleccionar Volumen y forma"
+                  aria-pressed="false"
+                >
+                  <picture>
+                    <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello-4.jpg" />
+                    <img src="/assets-proyecto/Imgs/optimized/Cabello-4.png" alt="" loading="lazy" decoding="async" />
+                  </picture>
+                  <span>Volumen</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -302,6 +304,7 @@
             </div>
 
             <p class="possibilities-side possibilities-side--right">posibilidades</p>
+            <p class="possibilities-scroll-cue" aria-hidden="true">Desliza para descubrir</p>
           </div>
 
           <button class="trailer-cta primary-cta" type="button">
@@ -318,9 +321,9 @@
         class="meet-product"
         aria-labelledby="meet-product-title"
       >
-        <h2 id="meet-product-title" class="meet-product__title" aria-label="meet your dyson">
+        <h2 id="meet-product-title" class="meet-product__title" aria-label="Meet your dyson">
           <span class="meet-product__word" aria-hidden="true">
-            <span class="meet-product__letter">m</span><span class="meet-product__letter">e</span><span class="meet-product__letter">e</span><span class="meet-product__letter">t</span>
+            <span class="meet-product__letter">M</span><span class="meet-product__letter">e</span><span class="meet-product__letter">e</span><span class="meet-product__letter">t</span>
           </span>
           <span class="meet-product__word" aria-hidden="true">
             <span class="meet-product__letter">y</span><span class="meet-product__letter">o</span><span class="meet-product__letter">u</span><span class="meet-product__letter">r</span>
