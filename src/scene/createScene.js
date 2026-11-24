@@ -5,11 +5,19 @@ import { createCamera, resetCamera } from './camera.js';
 import { addStudioLighting, createStudioEnvironment } from './lighting.js';
 import { createAirwrap } from '../models/Airwrap.js';
 
-export function createScene(container) {
+export function createScene(
+  container,
+  { transparent = false, controlsEnabled = true, background = 0xffffff } = {},
+) {
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xffffff);
+  scene.background = transparent ? null : new THREE.Color(background);
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: transparent,
+    powerPreference: 'high-performance',
+  });
+  if (transparent) renderer.setClearColor(0x000000, 0);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -22,6 +30,7 @@ export function createScene(container) {
 
   const camera = createCamera(1);
   const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enabled = controlsEnabled;
   controls.enableDamping = true;
   controls.dampingFactor = 0.065;
   controls.enablePan = false;
@@ -35,7 +44,128 @@ export function createScene(container) {
   addStudioLighting(scene);
   const productGroup = createAirwrap();
   const model = productGroup.userData.model;
-  scene.add(productGroup);
+  const visualGroup = new THREE.Group();
+  visualGroup.name = 'visualPresentationGroup';
+  const interactionGroup = new THREE.Group();
+  interactionGroup.name = 'userInteractionGroup';
+  const modelOffsetGroup = new THREE.Group();
+  modelOffsetGroup.name = 'interactionPivotOffset';
+  interactionGroup.position.y = CAMERA.target[1];
+  modelOffsetGroup.position.y = -CAMERA.target[1];
+  modelOffsetGroup.add(productGroup);
+  interactionGroup.add(modelOffsetGroup);
+  visualGroup.add(interactionGroup);
+  scene.add(visualGroup);
+
+  const materialStates = [];
+  const seenMaterials = new Set();
+  function collectMaterialStates() {
+    productGroup.traverse((object) => {
+      if (!object.isMesh) return;
+      const materials = Array.isArray(object.material) ? object.material : [object.material];
+      materials.forEach((material) => {
+        if (!material || material.userData.excludeFromModelOpacity || seenMaterials.has(material)) return;
+        seenMaterials.add(material);
+        materialStates.push({
+          material,
+          opacity: material.userData.modelBaseOpacity ?? material.opacity,
+          transparent: material.transparent,
+          depthWrite: material.depthWrite,
+        });
+      });
+    });
+  }
+  collectMaterialStates();
+
+  function setModelOpacity(value) {
+    collectMaterialStates();
+    const opacity = THREE.MathUtils.clamp(value, 0, 1);
+    materialStates.forEach((state) => {
+      const fading = opacity < 0.999;
+      const transparencyChanged = state.material.transparent !== (fading || state.transparent);
+      state.material.opacity = state.opacity * opacity;
+      state.material.transparent = fading || state.transparent;
+      state.material.depthWrite = fading ? false : state.depthWrite;
+      if (transparencyChanged) state.material.needsUpdate = true;
+    });
+  }
+
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+  const rotationTarget = new THREE.Vector2();
+  let interactionEnabled = false;
+  let activePointer = null;
+  let dragStarted = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let rotationStartY = 0;
+
+  function pointerHitsProductAt(clientX, clientY) {
+    const rect = renderer.domElement.getBoundingClientRect();
+    if (
+      clientX < rect.left
+      || clientX > rect.right
+      || clientY < rect.top
+      || clientY > rect.bottom
+    ) return false;
+
+    pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+    return raycaster.intersectObject(productGroup, true).length > 0;
+  }
+
+  function pointerHitsProduct(event) {
+    return pointerHitsProductAt(event.clientX, event.clientY);
+  }
+
+  function handlePointerDown(event) {
+    if (!interactionEnabled || !pointerHitsProduct(event)) return;
+    activePointer = event.pointerId;
+    dragStarted = event.pointerType !== 'touch';
+    dragStartX = event.clientX;
+    dragStartY = event.clientY;
+    rotationStartY = rotationTarget.y;
+    renderer.domElement.setPointerCapture(event.pointerId);
+    container.classList.add('is-grabbing');
+  }
+
+  function handlePointerMove(event) {
+    if (event.pointerId !== activePointer) return;
+    const deltaX = event.clientX - dragStartX;
+    const deltaY = event.clientY - dragStartY;
+
+    if (!dragStarted && Math.hypot(deltaX, deltaY) > 8) {
+      if (Math.abs(deltaY) > Math.abs(deltaX)) {
+        if (renderer.domElement.hasPointerCapture(event.pointerId)) {
+          renderer.domElement.releasePointerCapture(event.pointerId);
+        }
+        activePointer = null;
+        container.classList.remove('is-grabbing');
+        return;
+      }
+      dragStarted = true;
+    }
+
+    if (!dragStarted) return;
+    if (event.cancelable) event.preventDefault();
+    rotationTarget.y = rotationStartY + deltaX * 0.008;
+  }
+
+  function finishPointer(event) {
+    if (event.pointerId !== activePointer) return;
+    if (renderer.domElement.hasPointerCapture(event.pointerId)) {
+      renderer.domElement.releasePointerCapture(event.pointerId);
+    }
+    activePointer = null;
+    dragStarted = false;
+    container.classList.remove('is-grabbing');
+  }
+
+  renderer.domElement.addEventListener('pointerdown', handlePointerDown);
+  renderer.domElement.addEventListener('pointermove', handlePointerMove);
+  renderer.domElement.addEventListener('pointerup', finishPointer);
+  renderer.domElement.addEventListener('pointercancel', finishPointer);
 
   function resize() {
     const width = Math.max(container.clientWidth, 1);
@@ -49,8 +179,15 @@ export function createScene(container) {
   resizeObserver.observe(container);
   resize();
 
+  const frameCallbacks = new Set();
+  const clock = new THREE.Clock();
   let frameId;
   function render() {
+    const delta = Math.min(clock.getDelta(), 0.05);
+    const elapsed = clock.elapsedTime;
+    frameCallbacks.forEach((callback) => callback({ delta, elapsed }));
+    interactionGroup.rotation.x += (rotationTarget.x - interactionGroup.rotation.x) * 0.11;
+    interactionGroup.rotation.y += (rotationTarget.y - interactionGroup.rotation.y) * 0.11;
     controls.update();
     renderer.render(scene, camera);
     frameId = requestAnimationFrame(render);
@@ -63,11 +200,37 @@ export function createScene(container) {
     controls,
     renderer,
     productGroup,
+    visualGroup,
+    interactionGroup,
     model,
+    hitTestProduct: pointerHitsProductAt,
+    isInteractionEnabled: () => interactionEnabled,
+    isDragging: () => activePointer !== null && dragStarted,
+    addFrameCallback(callback) {
+      frameCallbacks.add(callback);
+      return () => frameCallbacks.delete(callback);
+    },
+    setModelOpacity,
+    setInteractionEnabled(enabled) {
+      interactionEnabled = enabled;
+      container.classList.toggle('is-interactive', enabled);
+      if (!enabled) {
+        activePointer = null;
+        dragStarted = false;
+        rotationTarget.set(0, 0);
+        container.classList.remove('is-grabbing');
+      }
+    },
     reset: () => resetCamera(camera, controls),
     destroy() {
       cancelAnimationFrame(frameId);
+      frameCallbacks.clear();
       resizeObserver.disconnect();
+      renderer.domElement.removeEventListener('pointerdown', handlePointerDown);
+      renderer.domElement.removeEventListener('pointermove', handlePointerMove);
+      renderer.domElement.removeEventListener('pointerup', finishPointer);
+      renderer.domElement.removeEventListener('pointercancel', finishPointer);
+      setModelOpacity(1);
       controls.dispose();
       model.dispose();
       environmentTarget.dispose();

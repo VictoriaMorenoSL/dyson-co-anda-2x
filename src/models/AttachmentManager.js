@@ -8,6 +8,7 @@ function cloneTransitionMaterials(attachment) {
     const clonedMaterials = sourceMaterials.map((source) => {
       if (!materialClones.has(source)) {
         const clone = source.clone();
+        clone.userData.modelBaseOpacity = source.opacity;
         clone.transparent = true;
         clone.opacity = 1;
         materialClones.set(source, clone);

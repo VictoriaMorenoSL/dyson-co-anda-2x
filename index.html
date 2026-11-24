@@ -3,49 +3,484 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#b47b76" />
     <meta
       name="description"
-      content="Estudio 3D interactivo de un dispositivo de estilizado por aire."
+      content="Dyson Air Studio: una experiencia interactiva alrededor del Dyson Airwrap Co-anda2x™."
     />
-    <title>Dyson Air Studio — Etapa 01</title>
+    <title>Dyson Air Studio — Air becomes style</title>
   </head>
   <body>
-    <main class="studio-shell">
-      <header class="studio-header">
-        <p class="eyebrow">DYSON AIR STUDIO</p>
-        <h1>Co-anda2x™ <span>estudio de forma</span></h1>
-      </header>
+    <main class="air-studio-experience">
+      <div
+        id="hero-scene"
+        class="hero-scene"
+        aria-label="Dyson Airwrap Co-anda2x en tres dimensiones"
+      ></div>
 
-      <section class="viewer" aria-label="Visor 3D interactivo del producto">
-        <div id="scene-container"></div>
-        <div class="attachment-selector" role="group" aria-label="Seleccionar accesorio">
-          <p class="selector-label">Accesorio</p>
-          <div class="selector-options">
-            <button class="attachment-option is-active" type="button" data-attachment="curling" aria-pressed="true">
-              Rizador
+      <section class="hero-scroll" aria-labelledby="hero-title">
+        <div class="hero-stage">
+          <div class="hero-atmosphere" aria-hidden="true">
+            <div class="hero-cursor-glow"></div>
+          </div>
+
+          <header class="site-header">
+            <a class="dyson-logo" href="#hero" aria-label="Ir al inicio">
+              <img src="/assets-proyecto/logo.svg" alt="" />
+            </a>
+            <nav class="primary-nav" id="primary-nav" aria-label="Navegación principal">
+              <a href="#next-section">Crea tu estilo</a>
+              <a href="#feel-the-air">Tecnología</a>
+            </nav>
+            <button
+              class="menu-toggle"
+              type="button"
+              aria-label="Abrir menú"
+              aria-controls="navigation-menu"
+              aria-expanded="false"
+            >
+              <span></span><span></span><span></span>
             </button>
-            <button class="attachment-option" type="button" data-attachment="fastDryer" aria-pressed="false">
-              Secador
-            </button>
-            <button class="attachment-option" type="button" data-attachment="roundBrush" aria-pressed="false">
-              Cepillo
-            </button>
-            <button class="attachment-option" type="button" data-attachment="airSmooth" aria-pressed="false">
-              AirSmooth
+          </header>
+
+          <div class="hero-typography" id="hero" aria-hidden="true">
+            <div class="hero-word word-air" data-word="air">
+              <span class="hero-letter" data-letter-index="0">a</span>
+              <span class="hero-letter" data-letter-index="1">i</span>
+              <span class="hero-letter" data-letter-index="2">r</span>
+            </div>
+            <div class="hero-word word-becomes" data-word="becomes">
+              <span class="hero-letter" data-letter-index="0">b</span>
+              <span class="hero-letter" data-letter-index="1">e</span>
+              <span class="hero-letter" data-letter-index="2">c</span>
+              <span class="hero-letter" data-letter-index="3">o</span>
+              <span class="hero-letter" data-letter-index="4">m</span>
+              <span class="hero-letter" data-letter-index="5">e</span>
+              <span class="hero-letter" data-letter-index="6">s</span>
+            </div>
+            <div class="hero-word word-style" data-word="style">
+              <span class="hero-letter" data-letter-index="0">s</span>
+              <span class="hero-letter" data-letter-index="1">t</span>
+              <span class="hero-letter" data-letter-index="2">y</span>
+              <span class="hero-letter" data-letter-index="3">l</span>
+              <span class="hero-letter" data-letter-index="4">e</span>
+            </div>
+          </div>
+
+          <h1 id="hero-title" class="sr-only">Air becomes style</h1>
+
+          <div class="hero-intro">
+            <p>
+              Descubre Dyson Airwrap Co-anda2x™, tecnología que transforma el aire en nuevas
+              posibilidades para tu cabello.
+            </p>
+            <a class="hero-cta primary-cta" href="#next-section">Explorar</a>
+          </div>
+
+          <p class="scroll-cue" aria-hidden="true">Desliza para descubrir</p>
+          <p class="interaction-cue" aria-hidden="true">Arrastra para explorar</p>
+        </div>
+      </section>
+
+      <section
+        id="next-section"
+        class="create-style-scroll"
+        aria-labelledby="create-style-title"
+      >
+        <div class="create-style-stage">
+          <div class="create-style-atmosphere" aria-hidden="true"></div>
+
+          <div class="create-style-content">
+            <h2 id="create-style-title" class="create-style-title" aria-live="polite">
+              <span>RIZOS</span>
+              <span>DEFINIDOS</span>
+            </h2>
+
+            <dl class="style-features" aria-live="polite">
+              <div>
+                <dt>Accesorio</dt>
+                <dd data-style-accessory>Rizador Co-anda2x™</dd>
+              </div>
+              <div>
+                <dt>Tecnología</dt>
+                <dd data-style-technology>Efecto Coanda</dd>
+              </div>
+              <div>
+                <dt>Resultado</dt>
+                <dd data-style-result>Rizos definidos</dd>
+              </div>
+            </dl>
+
+            <div class="style-selector" aria-label="Selecciona un resultado de estilizado">
+              <button
+                class="style-card is-active"
+                type="button"
+                data-style="curls"
+                aria-label="Seleccionar Rizos definidos"
+                aria-pressed="true"
+              >
+                <img src="/assets-proyecto/Imgs/optimized/Cabello.png" alt="" loading="lazy" decoding="async" />
+                <span>Rizos</span>
+              </button>
+              <button
+                class="style-card"
+                type="button"
+                data-style="waves"
+                aria-label="Seleccionar Ondas suaves"
+                aria-pressed="false"
+              >
+                <img src="/assets-proyecto/Imgs/optimized/Cabello-2.png" alt="" loading="lazy" decoding="async" />
+                <span>Ondas</span>
+              </button>
+              <button
+                class="style-card"
+                type="button"
+                data-style="smooth"
+                aria-label="Seleccionar Liso y suave"
+                aria-pressed="false"
+              >
+                <img src="/assets-proyecto/Imgs/optimized/Cabello-3.png" alt="" loading="lazy" decoding="async" />
+                <span>Liso</span>
+              </button>
+              <button
+                class="style-card"
+                type="button"
+                data-style="volume"
+                aria-label="Seleccionar Volumen y forma"
+                aria-pressed="false"
+              >
+                <img src="/assets-proyecto/Imgs/optimized/Cabello-4.png" alt="" loading="lazy" decoding="async" />
+                <span>Volumen</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="feel-the-air"
+        class="feel-air"
+        aria-labelledby="feel-air-title"
+      >
+        <div class="feel-air__content">
+          <div class="feel-air__heading">
+            <h2 id="feel-air-title">
+              <span class="feel-air__title-line">El aire que</span>
+              <span class="feel-air__title-line">da forma</span>
+            </h2>
+          </div>
+
+          <div class="feel-air__visual-space" aria-hidden="true"></div>
+
+          <div class="feel-air__copy">
+            <p>
+              Detrás de cada estilo hay una tecnología diseñada para aprovechar la fuerza del
+              aire. Descubre cómo funciona Dyson Airwrap Co-anda2x™.
+            </p>
+            <button class="feel-air__technology-cta primary-cta" type="button">
+              <span>Descubre la tecnología</span>
+              <span class="feel-air__technology-play" aria-hidden="true"></span>
             </button>
           </div>
-          <span id="attachment-status" class="sr-only" aria-live="polite">Rizador conectado</span>
         </div>
-        <p class="interaction-hint" aria-hidden="true">Arrastra para rotar · Pellizca para acercar</p>
-        <button id="reset-view" class="reset-button" type="button" aria-label="Restablecer vista 3D">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4.6 8.5A8 8 0 1 1 4 14M4.6 8.5V4m0 4.5H9" />
-          </svg>
-          Restablecer vista
-        </button>
       </section>
+
+      <section class="editorial-carousel" aria-label="Galería Dyson Air Studio">
+        <div class="editorial-carousel__viewport">
+          <div class="editorial-carousel__track">
+            <div class="editorial-carousel__sequence">
+              <figure class="editorial-carousel__item">
+                <img src="/assets-proyecto/Imgs/carrusel/foto-1.png" alt="Dyson Air Studio, fotografía 1" loading="lazy" decoding="async" />
+              </figure>
+              <figure class="editorial-carousel__item">
+                <img src="/assets-proyecto/Imgs/carrusel/foto-2.png" alt="Dyson Air Studio, fotografía 2" loading="lazy" decoding="async" />
+              </figure>
+              <figure class="editorial-carousel__item">
+                <img src="/assets-proyecto/Imgs/carrusel/foto-3.png" alt="Dyson Air Studio, fotografía 3" loading="lazy" decoding="async" />
+              </figure>
+              <figure class="editorial-carousel__item">
+                <img src="/assets-proyecto/Imgs/carrusel/foto-4.png" alt="Dyson Air Studio, fotografía 4" loading="lazy" decoding="async" />
+              </figure>
+              <figure class="editorial-carousel__item">
+                <img src="/assets-proyecto/Imgs/carrusel/foto-5.png" alt="Dyson Air Studio, fotografía 5" loading="lazy" decoding="async" />
+              </figure>
+              <figure class="editorial-carousel__item">
+                <img src="/assets-proyecto/Imgs/carrusel/foto-6.png" alt="Dyson Air Studio, fotografía 6" loading="lazy" decoding="async" />
+              </figure>
+              <figure class="editorial-carousel__item">
+                <img src="/assets-proyecto/Imgs/carrusel/foto-7.png" alt="Dyson Air Studio, fotografía 7" loading="lazy" decoding="async" />
+              </figure>
+              <figure class="editorial-carousel__item">
+                <img src="/assets-proyecto/Imgs/carrusel/foto-8.png" alt="Dyson Air Studio, fotografía 8" loading="lazy" decoding="async" />
+              </figure>
+              <figure class="editorial-carousel__item">
+                <img src="/assets-proyecto/Imgs/carrusel/foto-9.png" alt="Dyson Air Studio, fotografía 9" loading="lazy" decoding="async" />
+              </figure>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="possibilities"
+        class="possibilities-scroll"
+        aria-labelledby="possibilities-title"
+      >
+        <div class="possibilities-stage">
+          <h2 id="possibilities-title" class="sr-only">Conoce las posibilidades Dyson</h2>
+
+          <video
+            class="possibilities-video"
+            muted
+            playsinline
+            loop
+            preload="auto"
+            aria-label="Dyson Airwrap en uso"
+          >
+            <source src="/assets-proyecto/videos/dyson_recortado.mp4" type="video/mp4" />
+          </video>
+
+          <div class="possibilities-composition">
+            <p class="possibilities-side possibilities-side--left">conoce las</p>
+
+            <div
+              class="possibilities-logo-core"
+              data-logo-viewbox="0 0 584 225"
+              data-logo-zoom-point="96.05 27.7"
+              data-logo-solid-radius="12.5"
+            >
+              <object
+                class="possibilities-logo"
+                data="/assets-proyecto/logo.svg"
+                type="image/svg+xml"
+                aria-label="Dyson"
+                tabindex="-1"
+              >
+                <img src="/assets-proyecto/logo.svg" alt="Dyson" />
+              </object>
+              <p class="possibilities-submark">co-anda2x</p>
+            </div>
+
+            <p class="possibilities-side possibilities-side--right">posibilidades</p>
+          </div>
+
+          <button class="trailer-cta primary-cta" type="button">
+            <span>Ver tráiler completo</span>
+          </button>
+          <button class="possibilities-video-start primary-cta" type="button" hidden>
+            Reproducir video
+          </button>
+        </div>
+      </section>
+
+      <section
+        id="meet-your-dyson"
+        class="meet-product"
+        aria-labelledby="meet-product-title"
+      >
+        <h2 id="meet-product-title" class="meet-product__title" aria-label="meet your dyson">
+          <span class="meet-product__word" aria-hidden="true">
+            <span class="meet-product__letter">m</span><span class="meet-product__letter">e</span><span class="meet-product__letter">e</span><span class="meet-product__letter">t</span>
+          </span>
+          <span class="meet-product__word" aria-hidden="true">
+            <span class="meet-product__letter">y</span><span class="meet-product__letter">o</span><span class="meet-product__letter">u</span><span class="meet-product__letter">r</span>
+          </span>
+          <span class="meet-product__word" aria-hidden="true">
+            <span class="meet-product__letter">d</span><span class="meet-product__letter">y</span><span class="meet-product__letter">s</span><span class="meet-product__letter">o</span><span class="meet-product__letter">n</span>
+          </span>
+        </h2>
+
+        <div
+          class="meet-gallery"
+          role="region"
+          aria-label="Galería del Dyson Airwrap Co-anda2x"
+          aria-roledescription="carrusel"
+        >
+          <div class="meet-gallery__track">
+            <button
+              class="meet-gallery__slide is-active"
+              type="button"
+              aria-label="Mostrar el conjunto Dyson Airwrap"
+              aria-current="true"
+              data-gallery-index="0"
+            >
+              <img
+                src="/assets-proyecto/Imgs/carrusel-final/producto-final.png"
+                alt="Dyson Airwrap Co-anda2x Ceramic Pink con sus accesorios en una composición de estudio"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+            <button
+              class="meet-gallery__slide"
+              type="button"
+              aria-label="Mostrar la aplicación MyDyson"
+              data-gallery-index="1"
+            >
+              <img
+                src="/assets-proyecto/Imgs/carrusel-final/dyson_app_captura_HD.png"
+                alt="Pantalla de la aplicación MyDyson con controles del Airwrap Co-anda2x"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+            <button
+              class="meet-gallery__slide"
+              type="button"
+              aria-label="Mostrar fotografía editorial Dyson 1"
+              data-gallery-index="2"
+            >
+              <img
+                src="/assets-proyecto/Imgs/carrusel-final/foto-3.jpg"
+                alt="Fotografía editorial de Dyson Air Studio"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+            <button
+              class="meet-gallery__slide"
+              type="button"
+              aria-label="Mostrar fotografía editorial Dyson 2"
+              data-gallery-index="3"
+            >
+              <img
+                src="/assets-proyecto/Imgs/carrusel-final/foto-4.jpg"
+                alt="Fotografía editorial de cabello y estilizado Dyson"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+            <button
+              class="meet-gallery__slide"
+              type="button"
+              aria-label="Mostrar fotografía editorial Dyson 3"
+              data-gallery-index="4"
+            >
+              <img
+                src="/assets-proyecto/Imgs/carrusel-final/foto-5.webp"
+                alt="Detalle editorial de Dyson Air Studio"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+          </div>
+        </div>
+
+        <div class="meet-product__details">
+          <h3>Dyson Airwrap Co-anda2x™ · Ceramic Pink</h3>
+          <p class="meet-product__description">
+            Multiestilizador y secadora con tecnología de flujo de aire para crear diferentes
+            acabados.
+          </p>
+          <p class="meet-product__price" data-reference-price>$14,449.00</p>
+          <a
+            class="meet-product__buy primary-cta"
+            href="https://www.dyson.com.mx/productos/cuidado-del-cabello/multiestilizadores/multiestilizador-airwrap-coanda-2x-ceramicpink"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Comprar</a>
+          <p class="meet-product__financing">Hasta 24 meses sin intereses*</p>
+        </div>
+      </section>
+
+      <footer id="site-footer" class="site-footer" aria-label="Pie de página de Dyson Air Studio">
+        <div class="site-footer__inner">
+          <div class="site-footer__top" data-footer-reveal>
+            <a class="site-footer__brand" href="#hero" aria-label="Dyson Air Studio, volver al inicio">
+              <img src="/assets-proyecto/logo.svg" alt="Dyson" />
+              <span>AIR STUDIO</span>
+            </a>
+
+            <nav class="site-footer__nav" aria-label="Navegación del pie de página">
+              <p>Navegación</p>
+              <ul>
+                <li><a class="site-footer__link" href="#hero">Inicio</a></li>
+                <li><a class="site-footer__link" href="#next-section">Crea tu estilo</a></li>
+                <li><a class="site-footer__link" href="#feel-the-air">Tecnología</a></li>
+                <li><a class="site-footer__link" href="#meet-your-dyson">Conoce tu Dyson</a></li>
+              </ul>
+            </nav>
+          </div>
+
+          <div class="site-footer__editorial" data-footer-reveal>
+            <p>Tu estilo, sin límites.</p>
+            <a class="site-footer__link site-footer__back-top" href="#hero" data-back-top>
+              Volver arriba <span aria-hidden="true">↑</span>
+            </a>
+          </div>
+
+          <div class="site-footer__credits" data-footer-reveal>
+            <p class="site-footer__project">Proyecto académico independiente · 2026</p>
+            <p class="site-footer__country">México</p>
+            <p class="site-footer__disclaimer">
+              Proyecto académico de diseño web. Propuesta conceptual independiente, no afiliada
+              ni respaldada por Dyson.
+            </p>
+          </div>
+        </div>
+      </footer>
     </main>
+    <div
+      id="navigation-menu"
+      class="navigation-menu"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="navigation-menu-title"
+      hidden
+    >
+      <div class="navigation-menu__panel">
+        <div class="navigation-menu__topline">
+          <p id="navigation-menu-title">AIR STUDIO / MENÚ</p>
+          <button class="navigation-menu__close" type="button" aria-label="Cerrar menú">×</button>
+        </div>
+        <nav class="navigation-menu__nav" aria-label="Menú principal">
+          <a href="#hero"><span>01</span><strong>Inicio</strong></a>
+          <a href="#next-section"><span>02</span><strong>Crea tu estilo</strong></a>
+          <a href="#feel-the-air"><span>03</span><strong>Tecnología</strong></a>
+          <a href="#meet-your-dyson"><span>04</span><strong>Conoce tu Dyson</strong></a>
+        </nav>
+      </div>
+    </div>
+    <div
+      class="technology-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="technology-modal-title"
+      hidden
+    >
+      <div class="technology-modal__overlay" aria-hidden="true"></div>
+      <div class="technology-modal__player" tabindex="-1">
+        <h2 id="technology-modal-title" class="sr-only">Tecnología Dyson Airwrap Co-anda2x</h2>
+        <video
+          class="technology-modal__video"
+          src="/assets-proyecto/videos/dyson-tecnologia.mp4"
+          controls
+          playsinline
+          preload="metadata"
+          tabindex="0"
+        ></video>
+        <button class="technology-modal__close" type="button" aria-label="Cerrar video">×</button>
+      </div>
+    </div>
+    <div
+      class="trailer-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="trailer-modal-title"
+      hidden
+    >
+      <div class="trailer-modal__overlay" aria-hidden="true"></div>
+      <div class="trailer-modal__player" tabindex="-1">
+        <h2 id="trailer-modal-title" class="sr-only">Tráiler completo de Dyson Air Studio</h2>
+        <video class="trailer-modal__video" controls playsinline preload="none" tabindex="0"></video>
+        <button class="trailer-modal__close" type="button" aria-label="Cerrar tráiler">×</button>
+      </div>
+    </div>
+    <div class="custom-cursor" aria-hidden="true" data-cursor-state="normal">
+      <span class="custom-cursor__horizontal-icon">↔</span>
+      <span class="custom-cursor__link-icon">↗</span>
+      <span class="custom-cursor__label"></span>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
