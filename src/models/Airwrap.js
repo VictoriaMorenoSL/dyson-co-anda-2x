@@ -32,6 +32,28 @@ export function createAirwrap() {
   const attachments = createAttachmentCatalog(materials);
   const attachmentManager = new AttachmentManager(attachmentAnchor, attachments, 'curling');
 
+  function disposeProduct() {
+    attachmentManager.dispose();
+    const geometries = new Set();
+    const productMaterials = new Set(Object.values(materials));
+    const textures = new Set();
+    productGroup.traverse((object) => {
+      if (!object.isMesh) return;
+      if (object.geometry) geometries.add(object.geometry);
+      const objectMaterials = Array.isArray(object.material) ? object.material : [object.material];
+      objectMaterials.forEach((material) => {
+        if (!material) return;
+        productMaterials.add(material);
+        Object.values(material).forEach((value) => {
+          if (value?.isTexture) textures.add(value);
+        });
+      });
+    });
+    geometries.forEach((geometry) => geometry.dispose());
+    textures.forEach((texture) => texture.dispose());
+    productMaterials.forEach((material) => material.dispose());
+  }
+
   productGroup.add(mainBody, connector, attachmentAnchor);
   const modelApi = {
     object3D: productGroup,
@@ -46,7 +68,7 @@ export function createAirwrap() {
       applyVector(productGroup.scale, scale);
       return modelApi;
     },
-    dispose: () => attachmentManager.dispose(),
+    dispose: disposeProduct,
   };
   productGroup.userData = { mainBody, connector, attachmentAnchor, materials, model: modelApi };
 

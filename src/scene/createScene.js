@@ -5,27 +5,46 @@ import { createCamera, resetCamera } from './camera.js';
 import { addStudioLighting, createStudioEnvironment } from './lighting.js';
 import { createAirwrap } from '../models/Airwrap.js';
 
+function getRendererProfile() {
+  const mobile = window.matchMedia('(max-width: 900px)').matches;
+  const constrained = (navigator.deviceMemory && navigator.deviceMemory <= 4)
+    || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+  return {
+    mobile,
+    maxPixelRatio: mobile ? (constrained ? 1.25 : 1.5) : 2,
+    environmentSize: mobile ? 128 : 256,
+  };
+}
+
 export function createScene(
   container,
   { transparent = false, controlsEnabled = true, background = 0xffffff } = {},
 ) {
+  performance.mark('dyson:scene-start');
   const scene = new THREE.Scene();
   scene.background = transparent ? null : new THREE.Color(background);
+  let rendererProfile = getRendererProfile();
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: transparent,
     powerPreference: 'high-performance',
   });
+  performance.mark('dyson:renderer-ready');
+  performance.measure('dyson:renderer-init', 'dyson:scene-start', 'dyson:renderer-ready');
   if (transparent) renderer.setClearColor(0x000000, 0);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, rendererProfile.maxPixelRatio));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
   renderer.shadowMap.enabled = false;
   container.appendChild(renderer.domElement);
 
-  const environmentTarget = createStudioEnvironment(renderer);
+  const environmentTarget = createStudioEnvironment(renderer, {
+    size: rendererProfile.environmentSize,
+  });
+  performance.mark('dyson:environment-ready');
+  performance.measure('dyson:environment-init', 'dyson:renderer-ready', 'dyson:environment-ready');
   scene.environment = environmentTarget.texture;
 
   const camera = createCamera(1);
@@ -47,6 +66,8 @@ export function createScene(
 
   addStudioLighting(scene);
   const productGroup = createAirwrap();
+  performance.mark('dyson:model-ready');
+  performance.measure('dyson:model-build', 'dyson:environment-ready', 'dyson:model-ready');
   const model = productGroup.userData.model;
   const visualGroup = new THREE.Group();
   visualGroup.name = 'visualPresentationGroup';
@@ -76,23 +97,28 @@ export function createScene(
           transparent: material.transparent,
           depthWrite: material.depthWrite,
         });
+        if (rendererProfile.mobile && !material.transparent) {
+          material.transparent = true;
+          material.needsUpdate = true;
+        }
       });
     });
   }
   collectMaterialStates();
 
   function setModelOpacity(value) {
-    collectMaterialStates();
     const opacity = THREE.MathUtils.clamp(value, 0, 1);
     materialStates.forEach((state) => {
       const fading = opacity < 0.999;
-      const transparencyChanged = state.material.transparent !== (fading || state.transparent);
+      const nextTransparent = rendererProfile.mobile || fading || state.transparent;
+      const transparencyChanged = state.material.transparent !== nextTransparent;
       state.material.opacity = state.opacity * opacity;
-      state.material.transparent = fading || state.transparent;
+      state.material.transparent = nextTransparent;
       state.material.depthWrite = fading ? false : state.depthWrite;
       if (transparencyChanged) state.material.needsUpdate = true;
     });
   }
+  const removeAttachmentMaterialListener = model.onAttachmentChange(collectMaterialStates);
 
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
@@ -178,6 +204,11 @@ export function createScene(
   function resize() {
     const width = Math.max(container.clientWidth, 1);
     const height = Math.max(container.clientHeight, 1);
+    const nextProfile = getRendererProfile();
+    if (nextProfile.maxPixelRatio !== rendererProfile.maxPixelRatio) {
+      rendererProfile = nextProfile;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, rendererProfile.maxPixelRatio));
+    }
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
@@ -190,17 +221,86 @@ export function createScene(
   const frameCallbacks = new Set();
   const clock = new THREE.Clock();
   let frameId;
+  let firstFrameRendered = false;
+  let contextLost = false;
+  let destroyed = false;
+  let modelOpacity = 1;
+
+  function stopRendering() {
+    if (frameId !== undefined) cancelAnimationFrame(frameId);
+    frameId = undefined;
+    clock.stop();
+  }
+
+  function startRendering() {
+    if (destroyed || contextLost || document.hidden || frameId !== undefined) return;
+    clock.start();
+    frameId = requestAnimationFrame(render);
+  }
+
   function render() {
+    frameId = undefined;
+    if (destroyed || contextLost || document.hidden) return;
     const delta = Math.min(clock.getDelta(), 0.05);
     const elapsed = clock.elapsedTime;
     frameCallbacks.forEach((callback) => callback({ delta, elapsed }));
     interactionGroup.rotation.x += (rotationTarget.x - interactionGroup.rotation.x) * 0.11;
     interactionGroup.rotation.y += (rotationTarget.y - interactionGroup.rotation.y) * 0.11;
-    controls.update();
-    renderer.render(scene, camera);
+    if (controls.enabled) controls.update();
+    if (!firstFrameRendered || modelOpacity > 0.002) renderer.render(scene, camera);
+    if (!firstFrameRendered) {
+      firstFrameRendered = true;
+      performance.mark('dyson:first-frame');
+      performance.measure('dyson:scene-to-first-frame', 'dyson:scene-start', 'dyson:first-frame');
+      container.dataset.sceneState = 'ready';
+      container.dispatchEvent(new CustomEvent('dysonsceneready'));
+    }
     frameId = requestAnimationFrame(render);
   }
-  render();
+
+  function handleVisibilityChange() {
+    if (document.hidden) stopRendering();
+    else startRendering();
+  }
+
+  function handleContextLost(event) {
+    event.preventDefault();
+    contextLost = true;
+    stopRendering();
+    container.dataset.sceneState = 'restoring';
+    container.dispatchEvent(new CustomEvent('dysonscenecontextlost'));
+  }
+
+  function handleContextRestored() {
+    contextLost = false;
+    firstFrameRendered = false;
+    container.dataset.sceneState = 'loading';
+    container.dispatchEvent(new CustomEvent('dysonscenecontextrestored'));
+    startRendering();
+  }
+
+  container.dataset.sceneState = 'loading';
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+  renderer.domElement.addEventListener('webglcontextlost', handleContextLost, false);
+  renderer.domElement.addEventListener('webglcontextrestored', handleContextRestored, false);
+  if (rendererProfile.mobile && typeof renderer.compileAsync === 'function') {
+    queueMicrotask(() => {
+      performance.mark('dyson:shader-prepare-start');
+      renderer.compileAsync(scene, camera)
+        .catch(() => {})
+        .finally(() => {
+          performance.mark('dyson:shader-prepare-end');
+          performance.measure(
+            'dyson:shader-prepare',
+            'dyson:shader-prepare-start',
+            'dyson:shader-prepare-end',
+          );
+          startRendering();
+        });
+    });
+  } else {
+    startRendering();
+  }
 
   return {
     scene,
@@ -218,7 +318,20 @@ export function createScene(
       frameCallbacks.add(callback);
       return () => frameCallbacks.delete(callback);
     },
-    setModelOpacity,
+    setModelOpacity(value) {
+      modelOpacity = THREE.MathUtils.clamp(value, 0, 1);
+      setModelOpacity(modelOpacity);
+      startRendering();
+    },
+    getPerformanceSnapshot() {
+      return {
+        pixelRatio: renderer.getPixelRatio(),
+        render: { ...renderer.info.render },
+        memory: { ...renderer.info.memory },
+        programs: renderer.info.programs?.length ?? 0,
+        profile: { ...rendererProfile },
+      };
+    },
     setInteractionEnabled(enabled) {
       interactionEnabled = enabled;
       container.classList.toggle('is-interactive', enabled);
@@ -229,20 +342,81 @@ export function createScene(
     },
     reset: () => resetCamera(camera, controls),
     destroy() {
-      cancelAnimationFrame(frameId);
+      destroyed = true;
+      stopRendering();
       releaseActivePointer();
       frameCallbacks.clear();
       resizeObserver.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      renderer.domElement.removeEventListener('webglcontextlost', handleContextLost);
+      renderer.domElement.removeEventListener('webglcontextrestored', handleContextRestored);
       renderer.domElement.removeEventListener('pointerdown', handlePointerDown);
       renderer.domElement.removeEventListener('pointermove', handlePointerMove);
       renderer.domElement.removeEventListener('pointerup', finishPointer);
       renderer.domElement.removeEventListener('pointercancel', finishPointer);
+      removeAttachmentMaterialListener();
       setModelOpacity(1);
       controls.dispose();
       model.dispose();
       environmentTarget.dispose();
       renderer.dispose();
       renderer.domElement.remove();
+    },
+  };
+}
+
+export function createFallbackScene(container) {
+  const visualGroup = new THREE.Group();
+  const interactionGroup = new THREE.Group();
+  const attachmentAnchor = new THREE.Group();
+  const fallbackImage = container.querySelector('.scene-fallback');
+  let activeAttachment = 'curling';
+  let interactionEnabled = false;
+  const listeners = new Set();
+
+  visualGroup.add(interactionGroup);
+  interactionGroup.add(attachmentAnchor);
+  container.classList.add('is-fallback');
+  container.dataset.sceneState = 'fallback';
+
+  const model = {
+    attachmentAnchor,
+    attachmentKeys: ['curling', 'fastDryer', 'roundBrush', 'airSmooth'],
+    setAttachment(key) {
+      activeAttachment = key;
+      listeners.forEach((listener) => listener(key, null));
+      return Promise.resolve(null);
+    },
+    getActiveAttachment: () => activeAttachment,
+    onAttachmentChange(listener) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    dispose() { listeners.clear(); },
+  };
+
+  return {
+    scene: null,
+    camera: null,
+    controls: null,
+    renderer: null,
+    productGroup: attachmentAnchor,
+    visualGroup,
+    interactionGroup,
+    model,
+    hitTestProduct: () => false,
+    isInteractionEnabled: () => interactionEnabled,
+    isDragging: () => false,
+    addFrameCallback: () => () => {},
+    setModelOpacity(value) {
+      if (fallbackImage) fallbackImage.style.opacity = String(THREE.MathUtils.clamp(value, 0, 1));
+    },
+    setInteractionEnabled(value) { interactionEnabled = value; },
+    getPerformanceSnapshot: () => ({ fallback: true }),
+    reset: () => {},
+    destroy() {
+      model.dispose();
+      container.classList.remove('is-fallback');
     },
   };
 }

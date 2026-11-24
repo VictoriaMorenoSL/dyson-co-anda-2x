@@ -141,5 +141,20 @@ export class AttachmentManager {
     this.timeline?.kill();
     this.timeline = null;
     this.listeners.clear();
+    const geometries = new Set();
+    const materials = new Set();
+    this.attachments.forEach((attachment) => {
+      attachment.traverse((object) => {
+        if (!object.isMesh) return;
+        if (object.geometry) geometries.add(object.geometry);
+        const objectMaterials = Array.isArray(object.material) ? object.material : [object.material];
+        objectMaterials.forEach((material) => {
+          if (material) materials.add(material);
+        });
+      });
+    });
+    geometries.forEach((geometry) => geometry.dispose());
+    materials.forEach((material) => material.dispose());
+    this.attachments.clear();
   }
 }

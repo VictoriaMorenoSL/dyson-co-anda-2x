@@ -1,6 +1,6 @@
 import './styles.css';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { createScene } from './scene/createScene.js';
+import { createFallbackScene, createScene } from './scene/createScene.js';
 import { createHeroMotion } from './landing/createHeroMotion.js';
 import { createReactiveHeroBackground } from './landing/createReactiveHeroBackground.js';
 import { createStyleExperience } from './landing/createStyleExperience.js';
@@ -32,11 +32,27 @@ const destroyReactiveBackground = createReactiveHeroBackground({
   glow: heroGlow,
 });
 
-const studio = createScene(sceneContainer, {
-  transparent: true,
-  controlsEnabled: false,
+const sceneLoading = sceneContainer.querySelector('.scene-loading');
+sceneContainer.addEventListener('dysonscenecontextlost', () => {
+  if (sceneLoading) sceneLoading.textContent = 'Restaurando experiencia 3D…';
 });
+sceneContainer.addEventListener('dysonscenecontextrestored', () => {
+  if (sceneLoading) sceneLoading.textContent = 'Preparando experiencia 3D…';
+});
+
+let studio;
+try {
+  studio = createScene(sceneContainer, {
+    transparent: true,
+    controlsEnabled: false,
+  });
+} catch (error) {
+  console.error('No fue posible iniciar WebGL; se utilizará la vista estática.', error);
+  sceneContainer.querySelectorAll('canvas').forEach((canvas) => canvas.remove());
+  studio = createFallbackScene(sceneContainer);
+}
 studio.setModelOpacity(0);
+window.__dyson3dDiagnostics = () => studio.getPerformanceSnapshot();
 
 const destroyCustomCursor = createCustomCursor({
   cursor: document.querySelector('.custom-cursor'),
@@ -128,6 +144,7 @@ window.addEventListener(
     destroyEditorialCarousel();
     destroyMeetProduct();
     studio.destroy();
+    delete window.__dyson3dDiagnostics;
   },
   { once: true },
 );

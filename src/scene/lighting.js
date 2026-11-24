@@ -10,7 +10,7 @@ function createLightPanel(width, height, color, intensity = 1) {
   return new THREE.Mesh(new THREE.PlaneGeometry(width, height), material);
 }
 
-export function createStudioEnvironment(renderer) {
+export function createStudioEnvironment(renderer, { size = 256 } = {}) {
   const environmentScene = new THREE.Scene();
   environmentScene.background = new THREE.Color(0x171a1a);
 
@@ -35,7 +35,13 @@ export function createStudioEnvironment(renderer) {
   environmentScene.add(overhead);
 
   const pmremGenerator = new THREE.PMREMGenerator(renderer);
-  const environmentTarget = pmremGenerator.fromScene(environmentScene, 0.055, 0.1, 100);
+  const environmentTarget = pmremGenerator.fromScene(
+    environmentScene,
+    0.055,
+    0.1,
+    100,
+    { size },
+  );
   pmremGenerator.dispose();
 
   environmentScene.traverse((object) => {

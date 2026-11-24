@@ -8,9 +8,6 @@ import { getStylePose } from './createStyleExperience.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const STREAM_COUNT = 9;
-const POINT_COUNT = 128;
-
 function getFeelPose(viewportWidth = window.innerWidth) {
   if (viewportWidth <= 680) {
     return { x: 0.48, y: -0.35, zRotation: 1.18, scale: 0.58 };
@@ -25,6 +22,9 @@ function getFeelPose(viewportWidth = window.innerWidth) {
 }
 
 function createAirflow(model, addFrameCallback, reducedMotion) {
+  const mobileProfile = window.matchMedia('(max-width: 900px)').matches;
+  const streamCount = mobileProfile ? 6 : 9;
+  const pointCount = mobileProfile ? 72 : 128;
   const group = new THREE.Group();
   group.name = 'coandaAirflowGroup';
   group.visible = false;
@@ -40,8 +40,8 @@ function createAirflow(model, addFrameCallback, reducedMotion) {
   let pointerCurrent = 0;
   let reduced = reducedMotion.matches;
 
-  for (let streamIndex = 0; streamIndex < STREAM_COUNT; streamIndex += 1) {
-    const startAngle = (streamIndex / STREAM_COUNT) * Math.PI * 2 + 0.22;
+  for (let streamIndex = 0; streamIndex < streamCount; streamIndex += 1) {
+    const startAngle = (streamIndex / streamCount) * Math.PI * 2 + 0.22;
     const points = [];
     const controlCount = 15;
 
@@ -58,7 +58,7 @@ function createAirflow(model, addFrameCallback, reducedMotion) {
     }
 
     const curve = new THREE.CatmullRomCurve3(points, false, 'centripetal', 0.45);
-    const sampledPoints = curve.getPoints(POINT_COUNT - 1);
+    const sampledPoints = curve.getPoints(pointCount - 1);
     const positions = sampledPoints.flatMap((point) => [point.x, point.y, point.z]);
     const geometry = new LineGeometry();
     geometry.setPositions(positions);
@@ -106,7 +106,7 @@ function createAirflow(model, addFrameCallback, reducedMotion) {
       baseMaterial,
       tracer,
       tracerMaterial,
-      phase: streamIndex / STREAM_COUNT,
+      phase: streamIndex / streamCount,
       speed: 0.16 + streamIndex * 0.008,
     });
   }
@@ -199,7 +199,54 @@ export function createFeelAir({
   const copy = section.querySelector('.feel-air__copy');
   const styleContent = styleSection?.querySelector('.create-style-content');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const airflow = createAirflow(model, addFrameCallback, reducedMotion);
+  const airflowState = {
+    reveal: 0,
+    active: false,
+    pointer: 0,
+    reduced: reducedMotion.matches,
+  };
+  let airflowInstance;
+  let airflowIdleId;
+
+  function ensureAirflow() {
+    if (airflowInstance) return airflowInstance;
+    airflowInstance = createAirflow(model, addFrameCallback, reducedMotion);
+    airflowInstance.setReducedMotion(airflowState.reduced);
+    airflowInstance.setPointer(airflowState.pointer);
+    airflowInstance.setReveal(airflowState.reveal);
+    airflowInstance.setActive(airflowState.active);
+    return airflowInstance;
+  }
+
+  const airflow = {
+    ensure: ensureAirflow,
+    setReveal(value) {
+      airflowState.reveal = value;
+      airflowInstance?.setReveal(value);
+    },
+    setActive(value) {
+      airflowState.active = value;
+      airflowInstance?.setActive(value);
+    },
+    setPointer(value) {
+      airflowState.pointer = value;
+      airflowInstance?.setPointer(value);
+    },
+    setReducedMotion(value) {
+      airflowState.reduced = value;
+      airflowInstance?.setReducedMotion(value);
+    },
+    destroy() {
+      airflowInstance?.destroy();
+      airflowInstance = undefined;
+    },
+  };
+
+  if ('requestIdleCallback' in window) {
+    airflowIdleId = window.requestIdleCallback(ensureAirflow, { timeout: 1800 });
+  } else {
+    airflowIdleId = window.setTimeout(ensureAirflow, 900);
+  }
   let transitionTimeline;
   let lifecycleTrigger;
   let previousAttachment = model.getActiveAttachment();
@@ -209,6 +256,7 @@ export function createFeelAir({
   let viewportWidth = window.innerWidth;
 
   function enterFeel({ rememberAttachment = true } = {}) {
+    airflow.ensure();
     if (rememberAttachment && !feelSessionStarted) {
       previousAttachment = model.getActiveAttachment();
     }
@@ -393,6 +441,8 @@ export function createFeelAir({
     section.removeEventListener('pointerleave', handlePointerLeave);
     window.removeEventListener('resize', handleResize);
     reducedMotion.removeEventListener('change', handleMotionPreference);
+    if ('cancelIdleCallback' in window) window.cancelIdleCallback(airflowIdleId);
+    else window.clearTimeout(airflowIdleId);
     transitionTimeline?.scrollTrigger?.kill();
     transitionTimeline?.kill();
     lifecycleTrigger?.kill();
