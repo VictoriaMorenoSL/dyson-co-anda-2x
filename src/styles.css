@@ -710,10 +710,19 @@ button { font: inherit; }
 }
 
 .style-card img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 320ms ease, filter 220ms ease;
+}
+
+.style-card picture,
+.editorial-carousel__item picture,
+.meet-gallery__slide picture {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .style-card span {
