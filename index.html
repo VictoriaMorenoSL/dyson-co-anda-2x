@@ -14,7 +14,7 @@
   <body>
     <main class="air-studio-experience">
       <header class="site-header">
-        <a class="dyson-logo" href="#hero" aria-label="Ir al inicio">
+        <a class="site-header__logo" href="#hero" aria-label="Ir al inicio">
           <img src="/assets-proyecto/logo.svg" alt="" />
         </a>
         <nav class="primary-nav" id="primary-nav" aria-label="Navegación principal">
@@ -22,7 +22,7 @@
           <a href="#feel-the-air">Tecnología</a>
         </nav>
         <button
-          class="site-header__scheme-test"
+          class="site-header__theme-toggle"
           data-theme-toggle
           data-scheme="light"
           type="button"
@@ -154,7 +154,7 @@
                     <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello.jpg" />
                     <img src="/assets-proyecto/Imgs/optimized/Cabello.png" alt="" loading="lazy" decoding="async" />
                   </picture>
-                  <span>Rizos</span>
+                  <span class="style-card__label">Rizos</span>
                 </button>
                 <button
                   class="style-card"
@@ -167,7 +167,7 @@
                     <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello-2.jpg" />
                     <img src="/assets-proyecto/Imgs/optimized/Cabello-2.png" alt="" loading="lazy" decoding="async" />
                   </picture>
-                  <span>Ondas</span>
+                  <span class="style-card__label">Ondas</span>
                 </button>
                 <button
                   class="style-card"
@@ -180,7 +180,7 @@
                     <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello-3.jpg" />
                     <img src="/assets-proyecto/Imgs/optimized/Cabello-3.png" alt="" loading="lazy" decoding="async" />
                   </picture>
-                  <span>Liso</span>
+                  <span class="style-card__label">Liso</span>
                 </button>
                 <button
                   class="style-card"
@@ -193,7 +193,7 @@
                     <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello-4.jpg" />
                     <img src="/assets-proyecto/Imgs/optimized/Cabello-4.png" alt="" loading="lazy" decoding="async" />
                   </picture>
-                  <span>Volumen</span>
+                  <span class="style-card__label">Volumen</span>
                 </button>
               </div>
             </div>
@@ -491,38 +491,38 @@
       </div>
     </div>
     <div
-      class="technology-modal"
+      class="video-modal technology-modal"
       role="dialog"
       aria-modal="true"
       aria-labelledby="technology-modal-title"
       hidden
     >
-      <div class="technology-modal__overlay" aria-hidden="true"></div>
-      <div class="technology-modal__player" tabindex="-1">
+      <div class="video-modal__overlay technology-modal__overlay" aria-hidden="true"></div>
+      <div class="video-modal__player technology-modal__player" tabindex="-1">
         <h2 id="technology-modal-title" class="sr-only">Tecnología Dyson Airwrap Co-anda2x</h2>
         <video
-          class="technology-modal__video"
+          class="video-modal__video technology-modal__video"
           src="/assets-proyecto/videos/dyson-tecnologia.mp4"
           controls
           playsinline
           preload="none"
           tabindex="0"
         ></video>
-        <button class="technology-modal__close" type="button" aria-label="Cerrar video">×</button>
+        <button class="video-modal__close technology-modal__close" type="button" aria-label="Cerrar video">×</button>
       </div>
     </div>
     <div
-      class="trailer-modal"
+      class="video-modal trailer-modal"
       role="dialog"
       aria-modal="true"
       aria-labelledby="trailer-modal-title"
       hidden
     >
-      <div class="trailer-modal__overlay" aria-hidden="true"></div>
-      <div class="trailer-modal__player" tabindex="-1">
+      <div class="video-modal__overlay trailer-modal__overlay" aria-hidden="true"></div>
+      <div class="video-modal__player trailer-modal__player" tabindex="-1">
         <h2 id="trailer-modal-title" class="sr-only">Tráiler completo de Dyson Air Studio</h2>
-        <video class="trailer-modal__video" controls playsinline preload="none" tabindex="0"></video>
-        <button class="trailer-modal__close" type="button" aria-label="Cerrar tráiler">×</button>
+        <video class="video-modal__video trailer-modal__video" controls playsinline preload="none" tabindex="0"></video>
+        <button class="video-modal__close trailer-modal__close" type="button" aria-label="Cerrar tráiler">×</button>
       </div>
     </div>
     <div class="custom-cursor" aria-hidden="true" data-cursor-state="normal">

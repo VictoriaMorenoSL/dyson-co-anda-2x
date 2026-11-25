@@ -6,6 +6,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
+        guide: resolve(import.meta.dirname, 'guia-visual.html'),
         landing: resolve(import.meta.dirname, 'index.html'),
         viewer: resolve(import.meta.dirname, 'viewer.html'),
       },

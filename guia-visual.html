@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#080708" />
+  <meta name="description" content="Guía visual académica de Dyson Air Studio. Fundamentos visuales, componentes y estados de interacción." />
+  <title>Guía visual · Dyson Air Studio</title>
+  <link rel="stylesheet" href="/src/styles.css" />
+  <link rel="stylesheet" href="/src/guia-visual.css" />
+</head>
+<body class="guide">
+  <header class="guide-masthead">
+    <a class="guide-brand" href="#inicio" aria-label="Dyson Air Studio, inicio de la guía">
+      <img src="/assets-proyecto/logo.svg" width="584" height="225" alt="" />
+      <span>AIR STUDIO</span>
+    </a>
+    <nav aria-label="Secciones de la guía">
+      <a href="#fundamentos">Fundamentos</a>
+      <a href="#componentes">Componentes</a>
+    </nav>
+  </header>
+
+  <main id="inicio" class="guide-shell">
+    <section id="fundamentos" class="guide-sheet guide-foundations" aria-labelledby="foundation-title">
+      <div class="guide-cover">
+        <div class="guide-cover-copy">
+          <p class="guide-kicker">Dyson Air Studio</p>
+          <h1>Sistema de<br /> diseño<span>.</span></h1>
+          <p>Guía visual para la entrega de Maquetación Web.</p>
+        </div>
+        <img src="/assets-proyecto/Imgs/carrusel-final/foto-4.jpg" width="620" height="775" alt="Retrato editorial con el Dyson Airwrap" />
+      </div>
+
+      <header class="guide-section-head">
+        <p class="guide-kicker">01 / Fundamentos</p>
+        <h2 id="foundation-title">Fundamentos visuales</h2>
+      </header>
+
+      <div class="guide-foundation-grid">
+        <article class="guide-block guide-palette">
+          <h3>Paleta cromática</h3>
+          <ul class="guide-swatches" aria-label="Variables globales de color">
+            <li><span class="guide-swatch" style="background: var(--white)"></span><strong>Blanco</strong><code>#FFFFFF · --white</code><small>Texto sobre fondos oscuros.</small></li>
+            <li><span class="guide-swatch" style="background: var(--graphite)"></span><strong>Grafito</strong><code>#292929 · --graphite</code><small>Texto sobre fondos claros.</small></li>
+            <li><span class="guide-swatch" style="background: var(--copper)"></span><strong>Cobrizo</strong><code>#B47B76 · --copper</code><small>Acentos, header y CTA.</small></li>
+            <li><span class="guide-swatch" style="background: var(--dark)"></span><strong>Oscuro</strong><code>#211819 · --dark</code><small>Fondo base del body.</small></li>
+            <li><span class="guide-swatch" style="background: var(--ivory)"></span><strong>Marfil</strong><code>#E6D9D4 · --ivory</code><small>Botones y textos del tema oscuro.</small></li>
+          </ul>
+          <div class="guide-local-colors">
+            <span>Colores locales</span>
+            <span><i style="background: #080708"></i><code>#080708</code> Hero oscuro y Tecnología</span>
+            <span><i style="background: #F5F2EF"></i><code>#F5F2EF</code> Meet Your Dyson y fondo del video corto en tema claro</span>
+          </div>
+        </article>
+
+        <article class="guide-block guide-type">
+          <h3>Sistema tipográfico</h3>
+          <p><strong>Dyson Sans Modern</strong> para titulares. <strong>Poppins</strong> para cuerpo, navegación y controles.</p>
+          <div class="guide-type-meta"><span>Muestra</span><span>Escritorio / móvil<br />Tamaño e interlineado en px</span></div>
+          <ul class="guide-type-list">
+            <li><span class="text-display">Air</span><span><strong>Display</strong><code>96/116 · 56/68</code></span></li>
+            <li><span class="text-h1">Da forma</span><span><strong>H1</strong><code>60/72 · 48/56</code></span></li>
+            <li><span class="text-h2">Crea tu estilo</span><span><strong>H2</strong><code>48/56 · 40/48</code></span></li>
+            <li><span class="text-h3">Aire en movimiento</span><span><strong>H3</strong><code>40/48 · 32/40</code></span></li>
+            <li><span class="text-body-lg">Cuerpo y movimiento</span><span><strong>Cuerpo grande</strong><code>20/24 · 20/24</code></span></li>
+            <li><span class="text-body-md">El aire que da forma.</span><span><strong>Cuerpo mediano</strong><code>16/20 · 16/20</code></span></li>
+            <li><span class="text-body-sm">Dyson Airwrap Co-anda2x™</span><span><strong>Cuerpo pequeño</strong><code>12/16 · 12/16</code></span></li>
+            <li><span class="text-caption guide-caption-sample">ACCESORIO</span><span><strong>Caption</strong><code>12/16 · 12/16</code></span></li>
+          </ul>
+          <p class="guide-note">En pantalla, las muestras siguen la escala del viewport. Hero, Crea tu estilo y Tecnología ajustan sus titulares con valores fluidos de composición.</p>
+        </article>
+
+        <div class="guide-systems">
+          <article class="guide-block">
+            <h3>Espaciado</h3>
+            <ul class="guide-spaces" aria-label="Escala de espaciado">
+              <li><code>--space-1</code><i style="--sample-space: var(--space-1)"></i><span>4 px</span></li>
+              <li><code>--space-2</code><i style="--sample-space: var(--space-2)"></i><span>8 px</span></li>
+              <li><code>--space-3</code><i style="--sample-space: var(--space-3)"></i><span>12 px</span></li>
+              <li><code>--space-4</code><i style="--sample-space: var(--space-4)"></i><span>16 px</span></li>
+              <li><code>--space-6</code><i style="--sample-space: var(--space-6)"></i><span>24 px</span></li>
+              <li><code>--space-8</code><i style="--sample-space: var(--space-8)"></i><span>32 px</span></li>
+              <li><code>--space-12</code><i style="--sample-space: var(--space-12)"></i><span>48 px</span></li>
+              <li><code>--space-16</code><i style="--sample-space: var(--space-16)"></i><span>64 px</span></li>
+            </ul>
+            <p class="guide-note">Equivalencias con raíz de 16 px. Se conservan los espacios fluidos donde la composición editorial los requiere.</p>
+          </article>
+
+          <article class="guide-block">
+            <h3>Retícula y responsive</h3>
+            <p>Las retículas son específicas de cada sección. Los diagramas muestran la distribución base de <strong>Crea tu estilo</strong>.</p>
+            <ul class="guide-layouts">
+              <li><span class="guide-grid-demo guide-grid-desktop" aria-hidden="true"><i></i><i></i></span><strong>Escritorio</strong><small>≥1024 px · 58% / 42%</small></li>
+              <li><span class="guide-grid-demo guide-grid-tablet" aria-hidden="true"><i></i><i></i></span><strong>Tablet</strong><small>768–1023 px · 55% / restante</small></li>
+              <li><span class="guide-grid-demo guide-grid-mobile" aria-hidden="true"><i></i><i></i></span><strong>Móvil</strong><small>&lt;768 px · 1 columna</small></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="componentes" class="guide-sheet guide-components" aria-labelledby="component-title">
+      <header class="guide-section-head">
+        <p class="guide-kicker">02 / Componentes</p>
+        <h2 id="component-title">Componentes e interacciones</h2>
+        <p>Prueba el hover y el foco de teclado en las muestras, abre el menú o reproduce el video.</p>
+      </header>
+
+      <div class="guide-component-grid">
+        <article class="guide-block guide-navigation">
+          <h3>Navegación</h3>
+          <div class="site-header guide-header-sample">
+            <a class="site-header__logo" href="#inicio" aria-label="Ir al inicio de la guía"><img src="/assets-proyecto/logo.svg" alt="" /></a>
+            <nav class="primary-nav" aria-label="Navegación de muestra">
+              <a href="#fundamentos">Fundamentos</a><a href="#componentes">Componentes</a>
+            </nav>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Zm5 4 6 6m0-6-6 6" /></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 14.1A9 9 0 0 1 9.9 3.2a9 9 0 1 0 10.9 10.9Z" /></svg>
+            <details class="guide-menu-demo">
+              <summary class="menu-toggle" aria-label="Mostrar menú de muestra"><span></span><span></span><span></span></summary>
+              <div class="navigation-menu guide-menu-sample"><nav class="navigation-menu__nav" aria-label="Menú de muestra"><a href="#fundamentos"><span>01</span><strong>Fundamentos</strong></a><a href="#componentes"><span>02</span><strong>Componentes</strong></a></nav></div>
+            </details>
+          </div>
+          <div class="guide-control-row">
+            <div><span class="guide-control-pair">
+              <span class="site-header__theme-toggle" data-scheme="light"><svg data-scheme-icon="dark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 14.1A9 9 0 0 1 9.9 3.2a9 9 0 1 0 10.9 10.9Z" /></svg></span>
+              <span class="site-header__theme-toggle" data-scheme="dark"><svg data-scheme-icon="light" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5" /></svg></span>
+            </span><code>.site-header__theme-toggle</code><small>Claro · oscuro</small></div>
+            <div><span class="guide-control-pair">
+              <span class="site-header__sound-toggle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Zm5 4 6 6m0-6-6 6" /></svg></span>
+              <span class="site-header__sound-toggle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 4a4.25 4.25 0 0 1 0 6m3-9a8.5 8.5 0 0 1 0 12" /></svg></span>
+            </span><code>.site-header__sound-toggle</code><small>Silencio · activado</small></div>
+          </div>
+          <p class="guide-note"><code>.site-header</code> se compacta con el scroll. En móvil, <code>.navigation-menu</code> da acceso a los enlaces de <code>.primary-nav</code>.</p>
+        </article>
+
+        <article class="guide-block guide-buttons" id="estados">
+          <h3>Botones y estados</h3>
+          <p><code>.primary-cta</code> comparte el relleno animado. Cada variante ajusta sus medidas. El video corto también tiene un botón «Reproducir video» para el inicio manual.</p>
+          <div class="guide-state-row">
+            <figure><a class="hero-cta primary-cta" href="#estados">Explorar</a><figcaption>Normal</figcaption></figure>
+            <figure><span class="hero-cta primary-cta guide-hover-demo">Explorar</span><figcaption><code>:hover</code></figcaption></figure>
+            <figure><span class="hero-cta primary-cta guide-focus-demo">Explorar</span><figcaption><code>:focus-visible</code></figcaption></figure>
+          </div>
+          <div class="guide-cta-variants">
+            <span class="primary-cta feel-air__technology-cta">Descubre la tecnología <span class="feel-air__technology-play" aria-hidden="true"></span></span>
+            <span class="primary-cta trailer-cta">Ver tráiler completo</span>
+            <span class="primary-cta meet-product__buy">Comprar</span>
+          </div>
+          <p class="guide-note">El contorno indica foco de teclado. La selección persistente se distingue del <code>hover</code> en las tarjetas.</p>
+        </article>
+
+        <article class="guide-block guide-cards">
+          <h3>Tarjetas de selección</h3>
+          <div class="guide-card-pair">
+            <figure>
+              <button class="style-card" type="button" aria-label="Muestra de tarjeta Ondas, normal" aria-pressed="false">
+                <img src="/assets-proyecto/Imgs/mobile/styles/Cabello-2.jpg" alt="" />
+                <span class="style-card__label">Ondas</span>
+              </button>
+              <figcaption>Normal · <code>aria-pressed="false"</code></figcaption>
+            </figure>
+            <figure>
+              <button class="style-card is-active" type="button" aria-label="Muestra de tarjeta Rizos, seleccionada" aria-pressed="true">
+                <img src="/assets-proyecto/Imgs/mobile/styles/Cabello.jpg" alt="" />
+                <span class="style-card__label">Rizos</span>
+              </button>
+              <figcaption>Seleccionada · <code>aria-pressed="true"</code></figcaption>
+            </figure>
+          </div>
+          <p class="guide-note"><code>.style-card</code> contiene <code>.style-card__label</code>. El estado <code>.is-active</code> mantiene visible la etiqueta y refuerza el borde.</p>
+        </article>
+
+        <article class="guide-block guide-modals">
+          <h3>Modales de video</h3>
+          <figure class="guide-modal-figure">
+            <div class="guide-modal-preview video-modal">
+              <div class="video-modal__overlay" aria-hidden="true"></div>
+              <div class="video-modal__player">
+                <video class="video-modal__video" aria-label="Muestra de reproductor del video de Tecnología" src="/assets-proyecto/videos/dyson-tecnologia.mp4" poster="/assets-proyecto/Imgs/mobile/carrusel/foto-4.jpg" controls playsinline preload="none"></video>
+                <span class="video-modal__close" aria-hidden="true">×</span>
+              </div>
+            </div>
+            <figcaption>Reproductor de Tecnología con cierre y capa oscura en su encuadre de muestra.</figcaption>
+          </figure>
+          <p class="guide-note"><code>.technology-modal</code> y <code>.trailer-modal</code> comparten <code>.video-modal</code>. En la landing, Escape cierra ambos y devuelve el foco al botón de origen.</p>
+        </article>
+
+        <article class="guide-block guide-galleries">
+          <h3>Galerías</h3>
+          <div class="guide-gallery-pair">
+            <figure class="guide-editorial-preview">
+              <div class="editorial-carousel" aria-hidden="true">
+                <div class="editorial-carousel__track">
+                  <div class="editorial-carousel__item"><img src="/assets-proyecto/Imgs/mobile/carrusel/foto-3.jpg" alt="" /></div>
+                  <div class="editorial-carousel__item"><img src="/assets-proyecto/Imgs/mobile/carrusel/foto-4.jpg" alt="" /></div>
+                  <div class="editorial-carousel__item"><img src="/assets-proyecto/Imgs/mobile/carrusel/foto-5.jpg" alt="" /></div>
+                </div>
+              </div>
+              <figcaption><code>.editorial-carousel</code><span>Secuencia de fotos en movimiento continuo en la landing.</span></figcaption>
+            </figure>
+            <figure class="guide-meet-preview">
+              <div class="meet-gallery" role="region" aria-label="Muestra de Meet Your Dyson" tabindex="0">
+                <div class="meet-gallery__track">
+                  <div class="meet-gallery__slide"><img src="/assets-proyecto/Imgs/carrusel-final/foto-3.jpg" alt="Collage editorial del Airwrap y MyDyson" /></div>
+                  <div class="meet-gallery__slide is-active"><img src="/assets-proyecto/Imgs/mobile/carrusel-final/producto-final.jpg" alt="Airwrap y sus accesorios" /></div>
+                  <div class="meet-gallery__slide"><img src="/assets-proyecto/Imgs/mobile/carrusel-final/dyson_app_captura_HD.jpg" alt="Interfaz de MyDyson" /></div>
+                </div>
+              </div>
+              <figcaption><code>.meet-gallery</code><span>Exploración manual, con una imagen principal centrada.</span></figcaption>
+            </figure>
+          </div>
+        </article>
+      </div>
+
+      <footer class="guide-footer">
+        <span>Dyson Air Studio · Proyecto académico independiente</span>
+        <a href="./index.html">Abrir la landing</a>
+      </footer>
+    </section>
+  </main>
+</body>
+</html>
