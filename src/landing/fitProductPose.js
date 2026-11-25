@@ -5,7 +5,13 @@ const productCorners = [-1.35, 1.35].flatMap((x) =>
   [-5.5, 9.7].flatMap((y) => [-1.35, 1.35].map((z) => new Vector3(x, y, z))),
 );
 
-export function fitProductPose(scene, stage, slot, pose, { airflow = false, breakpoint = 1024 } = {}) {
+export function fitProductPose(
+  scene,
+  stage,
+  slot,
+  pose,
+  { airflow = false, breakpoint = 1024, bottomOverflow = 0 } = {},
+) {
   if (window.innerWidth >= breakpoint || !scene.camera || !slot) return pose;
 
   const canvas = scene.renderer.domElement.getBoundingClientRect();
@@ -16,7 +22,7 @@ export function fitProductPose(scene, stage, slot, pose, { airflow = false, brea
   const camera = scene.camera;
   camera.updateMatrixWorld();
   const topEdge = Math.max(target.top - frame.top, canvas.top + 8);
-  const bottomEdge = Math.min(target.bottom - frame.top, canvas.bottom - 8);
+  const bottomEdge = Math.min(target.bottom - frame.top, canvas.bottom - 8) + canvas.height * bottomOverflow;
   if (bottomEdge <= topEdge) return pose;
 
   const centerX = ((target.left + target.width / 2 - canvas.left) / canvas.width) * 2 - 1;

@@ -134,6 +134,7 @@ export function createStyleExperience({
 
     const heroPose = frameHero(getHeroProductPose().final);
     const stylePose = frameStyle(getStylePose());
+    const scaleEase = heroPose.scale > stylePose.scale ? 'power2.out' : 'none';
     gsap.set(content, { autoAlpha: 0 });
     gsap.set(atmosphere, { opacity: 1 });
     gsap.set([title, features], { y: 26 });
@@ -210,7 +211,7 @@ export function createStyleExperience({
       .fromTo(
         visualGroup.scale,
         { x: heroPose.scale, y: heroPose.scale, z: heroPose.scale },
-        { x: stylePose.scale, y: stylePose.scale, z: stylePose.scale, duration: 1 },
+        { x: stylePose.scale, y: stylePose.scale, z: stylePose.scale, duration: 1, ease: scaleEase },
         0,
       )
       .fromTo(

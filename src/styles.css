@@ -721,6 +721,8 @@ button { font: inherit; }
 }
 
 .create-style-content {
+  --style-safe-top: calc(var(--header-compact-height) + clamp(1.25rem, 3svh, 2rem));
+  --style-safe-bottom: clamp(1rem, 3svh, 2rem);
   position: sticky;
   z-index: 3;
   top: 0;
@@ -732,7 +734,7 @@ button { font: inherit; }
   width: 100%;
   height: 100svh;
   min-height: 38rem;
-  padding: clamp(3.5rem, 6vh, 5.5rem) clamp(1.75rem, 4.5vw, 5rem) clamp(1.5rem, 4vh, 3rem);
+  padding: max(clamp(3.5rem, 6vh, 5.5rem), var(--style-safe-top)) clamp(1.75rem, 4.5vw, 5rem) clamp(1.5rem, 4vh, 3rem);
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
@@ -797,6 +799,50 @@ button { font: inherit; }
 @media (min-width: 681px) {
   .create-style-content { row-gap: 0; }
   .style-features { margin-top: 200px; }
+}
+
+@media (width >= 1024px) {
+  .create-style-atmosphere {
+    z-index: 1;
+    background: radial-gradient(
+      ellipse 37% 95svh at 68% 63svh,
+      rgb(180 123 118 / 55%),
+      rgb(180 123 118 / 26%) 51%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(transparent, black 19svh, black 130svh, transparent);
+  }
+
+  .create-style-content {
+    grid-template-rows: minmax(0, 1fr) auto auto;
+    row-gap: clamp(1.5rem, 8.5svh - 1rem, 4.75rem);
+    padding: max(var(--style-safe-top), 17svh) clamp(1.5rem, 2.5vw, 3rem) 7svh;
+  }
+
+  .create-style-visual-space {
+    position: absolute;
+    display: block;
+    inset: max(var(--style-safe-top), 17svh) 20% var(--style-safe-bottom) 55%;
+    pointer-events: none;
+  }
+
+  .create-style-title {
+    align-self: start;
+    max-width: none;
+    text-transform: lowercase;
+  }
+
+  .create-style-title span + span { margin-top: 0.24em; }
+
+  .style-features {
+    max-width: none;
+    margin-top: 0;
+  }
+
+  .style-selector {
+    gap: clamp(1rem, 2.9vw, 2.5rem);
+    width: min(44.5vw, 50rem);
+  }
 }
 
 .style-card {
@@ -1807,7 +1853,7 @@ button { font: inherit; }
     gap: 0.75rem;
     min-height: 0;
     padding: 1.25rem 1.25rem 1rem;
-    padding-top: calc(var(--header-compact-height) + 0.75rem);
+    padding-top: var(--style-safe-top);
   }
   .create-style-visual-space { grid-column: 1; grid-row: 2; }
   .create-style-title {
@@ -2139,7 +2185,7 @@ button { font: inherit; }
   .create-style-content {
     grid-template-columns: minmax(0, 56%) minmax(0, 1fr);
     grid-template-rows: auto 1fr auto;
-    padding-block: calc(var(--header-compact-height) + 0.5rem) 1rem;
+    padding-block: var(--style-safe-top) 1rem;
   }
   .create-style-visual-space { grid-column: 2; grid-row: 1 / -1; }
   .create-style-title { font-size: clamp(2rem, 5.8vw, 3.35rem); }

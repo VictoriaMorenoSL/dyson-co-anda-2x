@@ -85,7 +85,14 @@ document.fonts.ready.then(() => {
     return (pose) => fitProductPose(studio, frame, slot, pose, options);
   };
   const frameHero = frameProduct(stage, '.hero-visual-space', { breakpoint: HERO_FRAMING_BREAKPOINT });
-  const frameStyle = frameProduct(styleSection.querySelector('.create-style-content'), '.create-style-visual-space');
+  const styleFrame = styleSection.querySelector('.create-style-content');
+  const styleSlot = styleFrame.querySelector('.create-style-visual-space');
+  const desktopStyle = window.matchMedia('(width >= 1024px)');
+  // Extend the desktop frame below the canvas so the handle continues out of view.
+  const frameStyle = (pose) => fitProductPose(studio, styleFrame, styleSlot, pose, {
+    breakpoint: Infinity,
+    bottomOverflow: desktopStyle.matches ? 0.55 : 0,
+  });
   const frameFeel = frameProduct(feelAirSection.querySelector('.feel-air__content'), '.feel-air__visual-space', { airflow: true });
 
   destroyMotion = createHeroMotion({
