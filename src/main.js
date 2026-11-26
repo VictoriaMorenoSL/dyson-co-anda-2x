@@ -15,6 +15,7 @@ import { createFeelAir } from './landing/createFeelAir.js';
 import { createTechnologyVideo } from './landing/createTechnologyVideo.js';
 import { createFooterMotion } from './landing/createFooterMotion.js';
 import { createNavigationMenu } from './landing/createNavigationMenu.js';
+import { createSectionRestStops } from './landing/createSectionRestStops.js';
 import { fitProductPose } from './landing/fitProductPose.js';
 
 ScrollTrigger.config({ ignoreMobileResize: true });
@@ -86,6 +87,7 @@ let destroyMeetProduct = () => {};
 let destroyFeelAir = () => {};
 let destroyTechnologyVideo = () => {};
 let destroyFooterMotion = () => {};
+let destroySectionRestStops = () => {};
 
 document.fonts.ready.then(() => {
   const frameProduct = (frame, selector, options) => {
@@ -166,11 +168,17 @@ document.fonts.ready.then(() => {
     section: meetProductSection,
   });
   destroyFooterMotion = createFooterMotion({ footer });
+  destroySectionRestStops = createSectionRestStops({
+    page: document.querySelector('.air-studio-experience'),
+    sceneContainer,
+    isDragging: studio.isDragging,
+  });
 });
 
 window.addEventListener(
   'pagehide',
   () => {
+    destroySectionRestStops();
     destroyMotion();
     destroyStyleExperience();
     destroyFeelAir();

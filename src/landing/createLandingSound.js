@@ -1,5 +1,6 @@
 import heroSource from '../../assets/audio/audio_hero.mp3?url';
 import coandaSource from '../../assets/audio/audio_coanda.mp3?url';
+import { createBackgroundAudio } from './createBackgroundAudio.js';
 
 const COANDA_TRANSITION = { source: coandaSource, volume: 0.68, attack: 0.15, decay: 0.45, offset: 0.5, duration: 2.2 };
 const EFFECTS = {
@@ -18,6 +19,7 @@ export function createLandingSound(toggle) {
 
   let context;
   let output;
+  let background;
   let pending;
   let voice;
   let releaseUntil = 0;
@@ -29,6 +31,10 @@ export function createLandingSound(toggle) {
   function setEnabled(next) {
     enabled = next;
     toggle.setAttribute('aria-pressed', String(enabled));
+  }
+
+  function syncBackground(immediate = false) {
+    background?.setPlaying(enabled && openVideos.size === 0, immediate);
   }
 
   function releaseVoice(immediately = false) {
@@ -65,6 +71,7 @@ export function createLandingSound(toggle) {
     if (!enabled) {
       pending = undefined;
       releaseVoice();
+      syncBackground();
       return;
     }
 
@@ -76,11 +83,19 @@ export function createLandingSound(toggle) {
         output.connect(context.destination);
       }
       context.resume().catch(() => {
-        if (context?.state !== 'running') setEnabled(false);
+        if (context && context.state !== 'running') {
+          setEnabled(false);
+          syncBackground();
+        }
       });
+      if (!background && typeof context.createMediaElementSource === 'function') {
+        background = createBackgroundAudio(context);
+      }
+      syncBackground();
       Object.keys(EFFECTS).forEach((kind) => loadEffect(kind));
     } catch {
       setEnabled(false);
+      syncBackground();
     }
   }
 
@@ -142,12 +157,15 @@ export function createLandingSound(toggle) {
         openVideos.delete(video);
       }
       if (output) output.gain.value = Number(openVideos.size === 0);
+      // With reduced motion, the video can start in the same frame as the modal.
+      syncBackground(open && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     },
     destroy() {
       toggle.removeEventListener('click', handleToggle);
       setEnabled(false);
       pending = undefined;
       releaseVoice(true);
+      background?.destroy();
       if (context && context.state !== 'closed') context.close().catch(() => {});
       context = undefined;
     },
