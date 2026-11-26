@@ -4,6 +4,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 export const HERO_FRAMING_BREAKPOINT = 1120;
+const MODEL_ENTRY_TIME = 0.15;
+const SOUND_RESET_TIME = 0.035;
+const SOUND_WINDOW_END = 0.45;
 
 const START_LAYOUTS = {
   desktop: {
@@ -47,6 +50,8 @@ export function createHeroMotion({
   visualGroup,
   setModelOpacity,
   setInteractionEnabled,
+  onTransitionSound,
+  onTransitionSoundReset,
 }) {
   const root = document.documentElement;
   const atmosphere = stage.querySelector('.hero-atmosphere');
@@ -62,6 +67,7 @@ export function createHeroMotion({
   let heroHitArea;
   let resizeTimer;
   let interactionActive = false;
+  let soundPlayed = false;
   let viewportWidth = window.innerWidth;
 
   function updateInteraction(enabled) {
@@ -151,6 +157,7 @@ export function createHeroMotion({
     }
 
     if (reducedMotion.matches) {
+      onTransitionSoundReset?.();
       showFinalState();
       return;
     }
@@ -192,16 +199,16 @@ export function createHeroMotion({
         duration: 0.3,
         ease: 'none',
         onUpdate: () => setModelOpacity(modelFade.value),
-      }, 0.15)
+      }, MODEL_ENTRY_TIME)
       .to(scrollCue, { autoAlpha: 0, y: 8, duration: 0.12 }, 0.08)
-      .to(visualGroup.position, { x: poses.final.x, y: poses.final.y, duration: 0.6 }, 0.15)
-      .to(visualGroup.rotation, { z: poses.final.zRotation, duration: 0.6 }, 0.15)
+      .to(visualGroup.position, { x: poses.final.x, y: poses.final.y, duration: 0.6 }, MODEL_ENTRY_TIME)
+      .to(visualGroup.rotation, { z: poses.final.zRotation, duration: 0.6 }, MODEL_ENTRY_TIME)
       .to(visualGroup.scale, {
         x: poses.final.scale,
         y: poses.final.scale,
         z: poses.final.scale,
         duration: 0.6,
-      }, 0.15)
+      }, MODEL_ENTRY_TIME)
       .to(atmosphere, { opacity: 1, duration: 0.3 }, 0.45)
       .to(stage, { '--hero-stage-color': '#080708', duration: 0.3 }, 0.45)
       .to(becomes, { '--hero-becomes-color': '#ffffff', duration: 0.3 }, 0.45)
@@ -211,6 +218,28 @@ export function createHeroMotion({
     timeline.progress(progress);
     updateInteraction(progress >= 0.97);
     ScrollTrigger.refresh();
+
+    const soundTimeline = timeline;
+    let previousTime = soundTimeline.time();
+    const inSoundWindow = () => timeline === soundTimeline
+      && soundTimeline.scrollTrigger.isActive
+      && soundTimeline.time() >= MODEL_ENTRY_TIME
+      && soundTimeline.time() < SOUND_WINDOW_END;
+
+    soundTimeline.eventCallback('onUpdate', () => {
+      const time = soundTimeline.time();
+      const crossedEntry = previousTime < MODEL_ENTRY_TIME && time >= MODEL_ENTRY_TIME;
+      previousTime = time;
+      if (ScrollTrigger.isRefreshing) return;
+
+      if (time <= SOUND_RESET_TIME && soundPlayed) {
+        soundPlayed = false;
+        onTransitionSoundReset?.();
+      } else if (crossedEntry && !soundPlayed && inSoundWindow()) {
+        soundPlayed = true;
+        onTransitionSound?.(inSoundWindow);
+      }
+    });
   }
 
   function handleResize() {

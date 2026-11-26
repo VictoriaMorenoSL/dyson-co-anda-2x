@@ -5,6 +5,7 @@ import { createFallbackScene, createScene } from './scene/createScene.js';
 import { createHeroMotion, HERO_FRAMING_BREAKPOINT } from './landing/createHeroMotion.js';
 import { createReactiveHeroBackground } from './landing/createReactiveHeroBackground.js';
 import { createStyleExperience } from './landing/createStyleExperience.js';
+import { createLandingSound } from './landing/createLandingSound.js';
 import { createCustomCursor } from './landing/createCustomCursor.js';
 import { createPossibilitiesMotion } from './landing/createPossibilitiesMotion.js';
 import { createTrailerExperience } from './landing/createTrailerExperience.js';
@@ -68,6 +69,13 @@ const destroyNavigationMenu = createNavigationMenu({
   menu: document.querySelector('.navigation-menu'),
   page: document.querySelector('.air-studio-experience'),
 });
+const landingSound = createLandingSound(document.querySelector('[data-sound-toggle]'));
+const playButtonSound = (event) => {
+  const button = event.target.closest?.('button, a.primary-cta');
+  if (!event.isTrusted || !button || button.matches('[data-sound-toggle], :disabled')) return;
+  landingSound.play('button');
+};
+document.addEventListener('click', playButtonSound, { capture: true });
 
 let destroyMotion = () => {};
 let destroyStyleExperience = () => {};
@@ -102,6 +110,8 @@ document.fonts.ready.then(() => {
     visualGroup: studio.visualGroup,
     setModelOpacity: studio.setModelOpacity,
     setInteractionEnabled: studio.setInteractionEnabled,
+    onTransitionSound: (inSoundWindow) => landingSound.play('hero', inSoundWindow),
+    onTransitionSoundReset: () => landingSound.stop('hero'),
   });
   destroyStyleExperience = createStyleExperience({
     section: styleSection,
@@ -124,6 +134,8 @@ document.fonts.ready.then(() => {
     setModelOpacity: studio.setModelOpacity,
     setInteractionEnabled: studio.setInteractionEnabled,
     addFrameCallback: studio.addFrameCallback,
+    onAirflowSound: (inSoundWindow) => landingSound.play('coanda', inSoundWindow),
+    onAirflowSoundReset: () => landingSound.stop('coanda'),
   });
   destroyTechnologyVideo = createTechnologyVideo({
     section: feelAirSection,
@@ -131,11 +143,13 @@ document.fonts.ready.then(() => {
     page: document.querySelector('.air-studio-experience'),
     setInteractionEnabled: studio.setInteractionEnabled,
     isInteractionEnabled: studio.isInteractionEnabled,
+    onOpenChange: (open) => landingSound.setVideoOpen('technology', open),
   });
   trailerExperience = createTrailerExperience({
     section: possibilitiesSection,
     modal: document.querySelector('.trailer-modal'),
     page: document.querySelector('.air-studio-experience'),
+    onOpenChange: (open) => landingSound.setVideoOpen('trailer', open),
   });
   destroyEditorialCarousel = createEditorialCarousel({ section: carouselSection });
   destroyPossibilitiesMotion = createPossibilitiesMotion({
@@ -145,6 +159,8 @@ document.fonts.ready.then(() => {
     setModelOpacity: studio.setModelOpacity,
     setInteractionEnabled: studio.setInteractionEnabled,
     onVideoRevealChange: trailerExperience.setRevealActive,
+    onZoomSound: (inSoundWindow) => landingSound.play('zoom', inSoundWindow),
+    onZoomSoundReset: () => landingSound.stop('zoom'),
   });
   destroyMeetProduct = createMeetProduct({
     section: meetProductSection,
@@ -165,6 +181,8 @@ window.addEventListener(
     destroyNavigationMenu();
     destroyPossibilitiesMotion();
     trailerExperience.destroy();
+    document.removeEventListener('click', playButtonSound, { capture: true });
+    landingSound.destroy();
     destroyEditorialCarousel();
     destroyMeetProduct();
     studio.destroy();

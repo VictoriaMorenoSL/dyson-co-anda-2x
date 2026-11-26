@@ -8,6 +8,10 @@ import { getStylePose } from './createStyleExperience.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const AIRFLOW_ENTRY = 0.4;
+const COANDA_SOUND_ENTRY = AIRFLOW_ENTRY + 0.003;
+const COANDA_SOUND_RESET = 0.1;
+
 function getFeelPose(viewportWidth = window.innerWidth) {
   if (viewportWidth < 768 && window.matchMedia('(min-height: 620px) and (orientation: portrait)').matches) {
     return { x: 0, y: 0.1, zRotation: 0.27, scale: 1.85 };
@@ -196,6 +200,8 @@ export function createFeelAir({
   setModelOpacity,
   setInteractionEnabled,
   addFrameCallback,
+  onAirflowSound,
+  onAirflowSoundReset,
 }) {
   if (!section) return () => {};
 
@@ -255,6 +261,7 @@ export function createFeelAir({
   }
   let transitionTimeline;
   let lifecycleTrigger;
+  let airflowSoundPlayed = false;
   let previousAttachment = model.getActiveAttachment();
   let feelSessionStarted = false;
   let sectionVisible = false;
@@ -295,6 +302,7 @@ export function createFeelAir({
     });
 
     if (reducedMotion.matches) {
+      onAirflowSoundReset?.();
       lifecycleTrigger = ScrollTrigger.create({
         id: 'feel-air-reduced',
         trigger: section,
@@ -335,6 +343,7 @@ export function createFeelAir({
     const airflowReveal = { value: 0 };
     const titleSpread = window.innerWidth < 768 ? 12 : window.innerWidth < 1024 ? 42 : 86;
     const initialTracking = window.innerWidth < 768 ? '0.04em' : '0.24em';
+    let previousProgress;
     transitionTimeline = gsap.timeline({
       defaults: { ease: 'none' },
       scrollTrigger: {
@@ -344,8 +353,24 @@ export function createFeelAir({
         end: 'top top',
         scrub: true,
         invalidateOnRefresh: true,
-        onUpdate: () => {
+        onRefresh: ({ progress }) => { previousProgress = progress; },
+        onUpdate: (trigger) => {
           airflow.setReveal(airflowReveal.value);
+          const previous = previousProgress;
+          const { progress, direction } = trigger;
+          previousProgress = progress;
+          if (previous === undefined || ScrollTrigger.isRefreshing) return;
+
+          if (progress <= COANDA_SOUND_RESET && airflowSoundPlayed) {
+            airflowSoundPlayed = false;
+            onAirflowSoundReset?.();
+          } else if (direction > 0 && previous < COANDA_SOUND_ENTRY && progress >= COANDA_SOUND_ENTRY
+            && !airflowSoundPlayed) {
+            airflowSoundPlayed = true;
+            const inSoundWindow = () => trigger === transitionTimeline?.scrollTrigger
+              && trigger.isActive && trigger.progress >= COANDA_SOUND_ENTRY && trigger.progress < 0.72;
+            if (inSoundWindow()) onAirflowSound?.(inSoundWindow);
+          }
         },
       },
     });
@@ -380,7 +405,7 @@ export function createFeelAir({
         0.28,
       )
       .fromTo(copy, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.38 }, 0.5)
-      .fromTo(airflowReveal, { value: 0 }, { value: 1, duration: 0.58 }, 0.4);
+      .fromTo(airflowReveal, { value: 0 }, { value: 1, duration: 0.58 }, AIRFLOW_ENTRY);
 
     if (styleContent) transitionTimeline.to(styleContent, { autoAlpha: 0, y: -20, duration: 0.44 }, 0);
 
@@ -451,8 +476,8 @@ export function createFeelAir({
   const exitTrigger = ScrollTrigger.create({
     id: 'feel-air-exit',
     trigger: section,
-    start: 'bottom 60%',
-    end: 'bottom 18%',
+    start: 'bottom 90%',
+    end: 'bottom 30%',
     onUpdate: syncExitOpacity,
     onRefresh: syncExitOpacity,
   });

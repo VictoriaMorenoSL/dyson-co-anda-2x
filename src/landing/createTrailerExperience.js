@@ -1,7 +1,7 @@
 import { gsap } from 'gsap';
 
 const TRAILER_SOURCE = new URL(
-  '../../assets-proyecto/videos/dyson_completo.mp4',
+  '../../assets/videos/dyson_completo.mp4',
   import.meta.url,
 ).href;
 
@@ -19,7 +19,7 @@ function getPlayerRect() {
   };
 }
 
-export function createTrailerExperience({ section, modal, page }) {
+export function createTrailerExperience({ section, modal, page, onOpenChange }) {
   if (!section || !modal) {
     return { setRevealActive: () => {}, destroy: () => {} };
   }
@@ -131,6 +131,7 @@ export function createTrailerExperience({ section, modal, page }) {
     const origin = trailerButton.getBoundingClientRect();
     const destination = getPlayerRect();
     modal.hidden = false;
+    onOpenChange?.(true);
     lockPage();
     trailerVideo.currentTime = 0;
     trailerVideo.controls = false;
@@ -167,6 +168,7 @@ export function createTrailerExperience({ section, modal, page }) {
 
   function finishClose() {
     modal.hidden = true;
+    onOpenChange?.(false);
     modalOpen = false;
     animating = false;
     unlockPage();
@@ -275,6 +277,7 @@ export function createTrailerExperience({ section, modal, page }) {
       trailerVideo.pause();
       if (modalOpen) {
         modal.hidden = true;
+        onOpenChange?.(false);
         modalOpen = false;
         animating = false;
         unlockPage();

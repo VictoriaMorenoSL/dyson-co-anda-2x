@@ -10,17 +10,33 @@
       content="Dyson Air Studio: una experiencia interactiva alrededor del Dyson Airwrap Co-anda2x™."
     />
     <title>Dyson Air Studio — Air becomes style</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
   </head>
   <body>
     <main class="air-studio-experience">
       <header class="site-header">
         <a class="site-header__logo" href="#hero" aria-label="Ir al inicio">
-          <img src="/assets-proyecto/logo.svg" alt="" />
+          <img src="/assets/logo.svg" alt="" />
         </a>
         <nav class="primary-nav" id="primary-nav" aria-label="Navegación principal">
-          <a href="#next-section">Crea tu estilo</a>
+          <a href="#create-your-style">Crea tu estilo</a>
           <a href="#feel-the-air">Tecnología</a>
         </nav>
+        <button
+          class="site-header__sound-toggle"
+          data-sound-toggle
+          type="button"
+          aria-label="Efectos de sonido"
+          aria-pressed="false"
+          hidden
+        >
+          <svg data-sound-icon="off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M11 5 6 9H3v6h3l5 4V5Zm5 4 6 6m0-6-6 6" />
+          </svg>
+          <svg data-sound-icon="on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M11 5 6 9H3v6h3l5 4V5Zm4 4a4.25 4.25 0 0 1 0 6m3-9a8.5 8.5 0 0 1 0 12" />
+          </svg>
+        </button>
         <button
           class="site-header__theme-toggle"
           data-theme-toggle
@@ -57,7 +73,7 @@
         </div>
         <img
           class="scene-fallback"
-          src="/assets-proyecto/Imgs/carrusel-final/producto-final.png"
+          src="/assets/images/product-gallery/desktop/producto-final.png"
           alt="Dyson Airwrap Co-anda2x con sus accesorios"
         />
       </div>
@@ -101,7 +117,7 @@
                 Descubre Dyson Airwrap Co-anda2x™, tecnología que transforma el aire en nuevas
                 posibilidades para tu cabello.
               </p>
-              <a class="hero-cta primary-cta" href="#next-section">Explorar</a>
+              <a class="hero-cta primary-cta" href="#create-your-style">Explorar</a>
             </div>
             <p class="interaction-cue" aria-hidden="true">Arrastra para explorar</p>
           </div>
@@ -111,11 +127,12 @@
       </section>
 
       <section
-        id="next-section"
+        id="create-your-style"
         class="create-style-scroll"
         aria-labelledby="create-style-title"
       >
-        <div class="create-style-stage">
+        <!-- Keep incoming links to the original section anchor working. -->
+        <div id="next-section" class="create-style-stage">
           <div class="create-style-atmosphere" aria-hidden="true"></div>
 
           <div class="create-style-content">
@@ -151,8 +168,8 @@
                   aria-pressed="true"
                 >
                   <picture>
-                    <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello.jpg" />
-                    <img src="/assets-proyecto/Imgs/optimized/Cabello.png" alt="" loading="lazy" decoding="async" />
+                    <source media="(max-width: 680px)" srcset="/assets/images/style-cards/mobile/Cabello.jpg" />
+                    <img src="/assets/images/style-cards/desktop/Cabello.png" alt="" loading="lazy" decoding="async" />
                   </picture>
                   <span class="style-card__label">Rizos</span>
                 </button>
@@ -164,8 +181,8 @@
                   aria-pressed="false"
                 >
                   <picture>
-                    <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello-2.jpg" />
-                    <img src="/assets-proyecto/Imgs/optimized/Cabello-2.png" alt="" loading="lazy" decoding="async" />
+                    <source media="(max-width: 680px)" srcset="/assets/images/style-cards/mobile/Cabello-2.jpg" />
+                    <img src="/assets/images/style-cards/desktop/Cabello-2.png" alt="" loading="lazy" decoding="async" />
                   </picture>
                   <span class="style-card__label">Ondas</span>
                 </button>
@@ -177,8 +194,8 @@
                   aria-pressed="false"
                 >
                   <picture>
-                    <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello-3.jpg" />
-                    <img src="/assets-proyecto/Imgs/optimized/Cabello-3.png" alt="" loading="lazy" decoding="async" />
+                    <source media="(max-width: 680px)" srcset="/assets/images/style-cards/mobile/Cabello-3.jpg" />
+                    <img src="/assets/images/style-cards/desktop/Cabello-3.png" alt="" loading="lazy" decoding="async" />
                   </picture>
                   <span class="style-card__label">Liso</span>
                 </button>
@@ -190,8 +207,8 @@
                   aria-pressed="false"
                 >
                   <picture>
-                    <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/styles/Cabello-4.jpg" />
-                    <img src="/assets-proyecto/Imgs/optimized/Cabello-4.png" alt="" loading="lazy" decoding="async" />
+                    <source media="(max-width: 680px)" srcset="/assets/images/style-cards/mobile/Cabello-4.jpg" />
+                    <img src="/assets/images/style-cards/desktop/Cabello-4.png" alt="" loading="lazy" decoding="async" />
                   </picture>
                   <span class="style-card__label">Volumen</span>
                 </button>
@@ -234,31 +251,31 @@
           <div class="editorial-carousel__track">
             <div class="editorial-carousel__sequence">
               <figure class="editorial-carousel__item">
-                <picture><source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/carrusel/foto-1.jpg" /><img src="/assets-proyecto/Imgs/carrusel/foto-1.png" alt="Dyson Air Studio, fotografía 1" loading="lazy" decoding="async" /></picture>
+                <picture><source media="(max-width: 680px)" srcset="/assets/images/editorial-carousel/mobile/foto-1.jpg" /><img src="/assets/images/editorial-carousel/desktop/foto-1.png" alt="Dyson Air Studio, fotografía 1" loading="lazy" decoding="async" /></picture>
               </figure>
               <figure class="editorial-carousel__item">
-                <picture><source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/carrusel/foto-2.jpg" /><img src="/assets-proyecto/Imgs/carrusel/foto-2.png" alt="Dyson Air Studio, fotografía 2" loading="lazy" decoding="async" /></picture>
+                <picture><source media="(max-width: 680px)" srcset="/assets/images/editorial-carousel/mobile/foto-2.jpg" /><img src="/assets/images/editorial-carousel/desktop/foto-2.png" alt="Dyson Air Studio, fotografía 2" loading="lazy" decoding="async" /></picture>
               </figure>
               <figure class="editorial-carousel__item">
-                <picture><source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/carrusel/foto-3.jpg" /><img src="/assets-proyecto/Imgs/carrusel/foto-3.png" alt="Dyson Air Studio, fotografía 3" loading="lazy" decoding="async" /></picture>
+                <picture><source media="(max-width: 680px)" srcset="/assets/images/editorial-carousel/mobile/foto-3.jpg" /><img src="/assets/images/editorial-carousel/desktop/foto-3.png" alt="Dyson Air Studio, fotografía 3" loading="lazy" decoding="async" /></picture>
               </figure>
               <figure class="editorial-carousel__item">
-                <picture><source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/carrusel/foto-4.jpg" /><img src="/assets-proyecto/Imgs/carrusel/foto-4.png" alt="Dyson Air Studio, fotografía 4" loading="lazy" decoding="async" /></picture>
+                <picture><source media="(max-width: 680px)" srcset="/assets/images/editorial-carousel/mobile/foto-4.jpg" /><img src="/assets/images/editorial-carousel/desktop/foto-4.png" alt="Dyson Air Studio, fotografía 4" loading="lazy" decoding="async" /></picture>
               </figure>
               <figure class="editorial-carousel__item">
-                <picture><source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/carrusel/foto-5.jpg" /><img src="/assets-proyecto/Imgs/carrusel/foto-5.png" alt="Dyson Air Studio, fotografía 5" loading="lazy" decoding="async" /></picture>
+                <picture><source media="(max-width: 680px)" srcset="/assets/images/editorial-carousel/mobile/foto-5.jpg" /><img src="/assets/images/editorial-carousel/desktop/foto-5.png" alt="Dyson Air Studio, fotografía 5" loading="lazy" decoding="async" /></picture>
               </figure>
               <figure class="editorial-carousel__item">
-                <picture><source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/carrusel/foto-6.jpg" /><img src="/assets-proyecto/Imgs/carrusel/foto-6.png" alt="Dyson Air Studio, fotografía 6" loading="lazy" decoding="async" /></picture>
+                <picture><source media="(max-width: 680px)" srcset="/assets/images/editorial-carousel/mobile/foto-6.jpg" /><img src="/assets/images/editorial-carousel/desktop/foto-6.png" alt="Dyson Air Studio, fotografía 6" loading="lazy" decoding="async" /></picture>
               </figure>
               <figure class="editorial-carousel__item">
-                <picture><source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/carrusel/foto-7.jpg" /><img src="/assets-proyecto/Imgs/carrusel/foto-7.png" alt="Dyson Air Studio, fotografía 7" loading="lazy" decoding="async" /></picture>
+                <picture><source media="(max-width: 680px)" srcset="/assets/images/editorial-carousel/mobile/foto-7.jpg" /><img src="/assets/images/editorial-carousel/desktop/foto-7.png" alt="Dyson Air Studio, fotografía 7" loading="lazy" decoding="async" /></picture>
               </figure>
               <figure class="editorial-carousel__item">
-                <picture><source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/carrusel/foto-8.jpg" /><img src="/assets-proyecto/Imgs/carrusel/foto-8.png" alt="Dyson Air Studio, fotografía 8" loading="lazy" decoding="async" /></picture>
+                <picture><source media="(max-width: 680px)" srcset="/assets/images/editorial-carousel/mobile/foto-8.jpg" /><img src="/assets/images/editorial-carousel/desktop/foto-8.png" alt="Dyson Air Studio, fotografía 8" loading="lazy" decoding="async" /></picture>
               </figure>
               <figure class="editorial-carousel__item">
-                <picture><source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/carrusel/foto-9.jpg" /><img src="/assets-proyecto/Imgs/carrusel/foto-9.png" alt="Dyson Air Studio, fotografía 9" loading="lazy" decoding="async" /></picture>
+                <picture><source media="(max-width: 680px)" srcset="/assets/images/editorial-carousel/mobile/foto-9.jpg" /><img src="/assets/images/editorial-carousel/desktop/foto-9.png" alt="Dyson Air Studio, fotografía 9" loading="lazy" decoding="async" /></picture>
               </figure>
             </div>
           </div>
@@ -281,7 +298,7 @@
             preload="metadata"
             aria-label="Dyson Airwrap en uso"
           >
-            <source src="/assets-proyecto/videos/dyson_recortado.mp4" type="video/mp4" />
+            <source src="/assets/videos/dyson_recortado.mp4" type="video/mp4" />
           </video>
 
           <div class="possibilities-composition">
@@ -295,7 +312,7 @@
             >
               <img
                 class="possibilities-logo"
-                src="/assets-proyecto/logo.svg"
+                src="/assets/logo.svg"
                 width="584"
                 height="225"
                 alt="Dyson"
@@ -348,9 +365,9 @@
               data-gallery-index="0"
             >
               <picture>
-                <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/carrusel-final/producto-final.jpg" />
+                <source media="(max-width: 680px)" srcset="/assets/images/product-gallery/mobile/producto-final.jpg" />
                 <img
-                  src="/assets-proyecto/Imgs/carrusel-final/producto-final.png"
+                  src="/assets/images/product-gallery/desktop/producto-final.png"
                   alt="Dyson Airwrap Co-anda2x Ceramic Pink con sus accesorios en una composición de estudio"
                   loading="lazy"
                   decoding="async"
@@ -364,9 +381,9 @@
               data-gallery-index="1"
             >
               <picture>
-                <source media="(max-width: 680px)" srcset="/assets-proyecto/Imgs/mobile/carrusel-final/dyson_app_captura_HD.jpg" />
+                <source media="(max-width: 680px)" srcset="/assets/images/product-gallery/mobile/dyson_app_captura_HD.jpg" />
                 <img
-                  src="/assets-proyecto/Imgs/carrusel-final/dyson_app_captura_HD.png"
+                  src="/assets/images/product-gallery/desktop/dyson_app_captura_HD.png"
                   alt="Pantalla de la aplicación MyDyson con controles del Airwrap Co-anda2x"
                   loading="lazy"
                   decoding="async"
@@ -380,7 +397,7 @@
               data-gallery-index="2"
             >
               <img
-                src="/assets-proyecto/Imgs/carrusel-final/foto-3.jpg"
+                src="/assets/images/product-gallery/desktop/foto-3.jpg"
                 alt="Fotografía editorial de Dyson Air Studio"
                 loading="lazy"
                 decoding="async"
@@ -393,7 +410,7 @@
               data-gallery-index="3"
             >
               <img
-                src="/assets-proyecto/Imgs/carrusel-final/foto-4.jpg"
+                src="/assets/images/product-gallery/desktop/foto-4.jpg"
                 alt="Fotografía editorial de cabello y estilizado Dyson"
                 loading="lazy"
                 decoding="async"
@@ -406,7 +423,7 @@
               data-gallery-index="4"
             >
               <img
-                src="/assets-proyecto/Imgs/carrusel-final/foto-5.webp"
+                src="/assets/images/product-gallery/desktop/foto-5.webp"
                 alt="Detalle editorial de Dyson Air Studio"
                 loading="lazy"
                 decoding="async"
@@ -436,7 +453,7 @@
         <div class="site-footer__inner">
           <div class="site-footer__top" data-footer-reveal>
             <a class="site-footer__brand" href="#hero" aria-label="Dyson Air Studio, volver al inicio">
-              <img src="/assets-proyecto/logo.svg" alt="Dyson" />
+              <img src="/assets/logo.svg" alt="Dyson" />
               <span>AIR STUDIO</span>
             </a>
 
@@ -444,7 +461,7 @@
               <p>Navegación</p>
               <ul>
                 <li><a class="site-footer__link" href="#hero">Inicio</a></li>
-                <li><a class="site-footer__link" href="#next-section">Crea tu estilo</a></li>
+                <li><a class="site-footer__link" href="#create-your-style">Crea tu estilo</a></li>
                 <li><a class="site-footer__link" href="#feel-the-air">Tecnología</a></li>
                 <li><a class="site-footer__link" href="#meet-your-dyson">Conoce tu Dyson</a></li>
               </ul>
@@ -484,7 +501,7 @@
         </div>
         <nav class="navigation-menu__nav" aria-label="Menú principal">
           <a href="#hero"><span>01</span><strong>Inicio</strong></a>
-          <a href="#next-section"><span>02</span><strong>Crea tu estilo</strong></a>
+          <a href="#create-your-style"><span>02</span><strong>Crea tu estilo</strong></a>
           <a href="#feel-the-air"><span>03</span><strong>Tecnología</strong></a>
           <a href="#meet-your-dyson"><span>04</span><strong>Conoce tu Dyson</strong></a>
         </nav>
@@ -502,7 +519,7 @@
         <h2 id="technology-modal-title" class="sr-only">Tecnología Dyson Airwrap Co-anda2x</h2>
         <video
           class="video-modal__video technology-modal__video"
-          src="/assets-proyecto/videos/dyson-tecnologia.mp4"
+          src="/assets/videos/dyson-tecnologia.mp4"
           controls
           playsinline
           preload="none"

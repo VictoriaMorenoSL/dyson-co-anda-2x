@@ -3,6 +3,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const LOGO_ZOOM_START = 0.18;
+const ZOOM_SOUND_RESET = 0.04;
+
 export function createPossibilitiesMotion({
   section,
   nextSection,
@@ -10,6 +13,8 @@ export function createPossibilitiesMotion({
   setModelOpacity,
   setInteractionEnabled,
   onVideoRevealChange,
+  onZoomSound,
+  onZoomSoundReset,
 }) {
   if (!section) return () => {};
 
@@ -29,6 +34,7 @@ export function createPossibilitiesMotion({
   let resizeTimer;
   let stageSize = '';
   let videoRevealActive = false;
+  let zoomSoundPlayed = false;
 
   function updateVideoReveal(progress, force = false) {
     let next = videoRevealActive;
@@ -122,6 +128,7 @@ export function createPossibilitiesMotion({
     const offsets = getMotionOffsets();
 
     if (reducedMotion.matches) {
+      onZoomSoundReset?.();
       gsap.set([leftCopy, rightCopy, submark, logoCore, scrollCue], { autoAlpha: 0 });
       gsap.set(video, { autoAlpha: 1 });
       gsap.set(trailerButton, {
@@ -184,7 +191,7 @@ export function createPossibilitiesMotion({
         scale: zoom.scale,
         duration: 0.72,
         ease: 'power2.inOut',
-      }, 0.18)
+      }, LOGO_ZOOM_START)
       .to(video, {
         autoAlpha: 1,
         duration: 0.14,
@@ -200,6 +207,27 @@ export function createPossibilitiesMotion({
 
     zoomTimeline.progress(zoomProgress);
     updateVideoReveal(zoomProgress, true);
+
+    const soundTimeline = zoomTimeline;
+    let previousTime = soundTimeline.time();
+    const inSoundWindow = () => zoomTimeline === soundTimeline
+      && soundTimeline.scrollTrigger.isActive
+      && soundTimeline.time() >= LOGO_ZOOM_START
+      && soundTimeline.time() < 0.72;
+    soundTimeline.eventCallback('onUpdate', () => {
+      const time = soundTimeline.time();
+      const crossedStart = previousTime < LOGO_ZOOM_START && time >= LOGO_ZOOM_START;
+      previousTime = time;
+      if (ScrollTrigger.isRefreshing) return;
+
+      if (time <= ZOOM_SOUND_RESET && zoomSoundPlayed) {
+        zoomSoundPlayed = false;
+        onZoomSoundReset?.();
+      } else if (crossedStart && !zoomSoundPlayed && inSoundWindow()) {
+        zoomSoundPlayed = true;
+        onZoomSound?.(inSoundWindow);
+      }
+    });
   }
 
   function handleResize() {

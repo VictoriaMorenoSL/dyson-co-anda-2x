@@ -21,6 +21,7 @@ export function createTechnologyVideo({
   page,
   setInteractionEnabled,
   isInteractionEnabled,
+  onOpenChange,
 }) {
   if (!section || !modal) return () => {};
 
@@ -86,6 +87,7 @@ export function createTechnologyVideo({
     const origin = trigger.getBoundingClientRect();
     const destination = getPlayerRect();
     modal.hidden = false;
+    onOpenChange?.(true);
     lockPage();
     video.currentTime = 0;
     video.controls = false;
@@ -122,6 +124,7 @@ export function createTechnologyVideo({
 
   const finishClose = () => {
     modal.hidden = true;
+    onOpenChange?.(false);
     open = false;
     animating = false;
     unlockPage();
